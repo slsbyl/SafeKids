@@ -7,12 +7,14 @@ Team Members
 - Dareen Hasan Ali
 - Roaa Abdelghany Abdo
 - Salsabil Ahmed Hussien
+
 Project Overview
 The Kids Movies App is created to give children a safe and fun place to watch animated movies. It provides a curated collection of movies that are suitable for kids, with a simple and friendly design. The project will be developed using Android Studio for mobile development .
 Project Objectives
 -Deliver a safe and trusted collection of kids’ movies and cartoons.
 - Design a fun, colorful, and easy-to-use interface made especially for children.
 - Ensure a secure and enjoyable viewing experience, free from irrelevant content and fully suitable for young ages.
+  --------------------------------------------------------------------------------------------------------------------------------------
 Project Scope
 - Mobile Development: Develop an Android mobile application using Android Studio.
 - Database & Content: Implement a database solution to store and manage kids’ movies with details (title, image, description).
