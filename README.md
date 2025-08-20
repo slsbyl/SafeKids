@@ -1,5 +1,5 @@
 # Safe-Kids
-Kids Movies App – a safe and fun cartoon app for children under the Digital Pioneers Initiative.
+#### Kids Movies App – a safe and fun cartoon app for children under supervision of digital Egyptian pioneers intiative.
 ![Kids Movies App – preview](slsbyl.jpg)
 Team Members
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------
