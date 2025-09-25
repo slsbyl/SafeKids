@@ -101,9 +101,9 @@ Project Plan
 •	 Polished and user-friendly app.
 
 •	 Complete project documentation uploaded to GitHub
----
-#  Team Task Distribution
 
+Team Task Distribution
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## Week 1: Project Setup and UI Design
 - *Basmala:* Initialize Project  
 - *Basant:* Version Control  
