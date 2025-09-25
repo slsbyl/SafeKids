@@ -93,6 +93,41 @@ Project Plan
 •	 Refine the UI/UX with animations, loading states, and error handling.
 
 •	 Write the final project documentation (README, instructions, features).
+# 📅 Team Task Distribution
+
+## Week 1: Project Setup and UI Design
+- *Basmala:* Initialize Project  
+- *Basant:* Version Control  
+- *Slsabil:* UI - UX Design  
+- *Roaa:* Build Static UI  
+- *Dareen:* Build Static UI  
+
+---
+
+## Week 2: API Integration and Dynamic Display
+- *Basmala:* Networking Setup  
+- *Basant:* Fetch Data  
+- *Slsabil:* Dynamic UI  
+- *Roaa:* Dynamic UI  
+- *Dareen:* Dynamic UI  
+
+---
+
+## Week 3: Navigation and Detail Screen
+- *Basmala:* Implement Navigation  
+- *Basant:* Build Detail Screen  
+- *Slsabil:* Pass Data  
+- *Roaa:* Build Detail Screen  
+- *Dareen:* Unit Testing  
+
+---
+
+## Week 4: Search, Security, and Final Polish
+- *Basmala:* Implement Search  
+- *Basant:* Address Security  
+- *Slsabil:* Functional Documentation  
+- *Roaa:* UI Polish  
+- *Dareen:* UI Polish
 
 #### Deliverables:
 •	 Fully functional search feature.
