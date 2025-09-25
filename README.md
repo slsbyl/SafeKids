@@ -93,7 +93,16 @@ Project Plan
 •	 Refine the UI/UX with animations, loading states, and error handling.
 
 •	 Write the final project documentation (README, instructions, features).
-# 📅 Team Task Distribution
+#### Deliverables:
+•	 Fully functional search feature.
+
+•	 Secure handling of sensitive data.
+
+•	 Polished and user-friendly app.
+
+•	 Complete project documentation uploaded to GitHub
+---
+#  Team Task Distribution
 
 ## Week 1: Project Setup and UI Design
 - *Basmala:* Initialize Project  
@@ -129,11 +138,4 @@ Project Plan
 - *Roaa:* UI Polish  
 - *Dareen:* UI Polish
 
-#### Deliverables:
-•	 Fully functional search feature.
 
-•	 Secure handling of sensitive data.
-
-•	 Polished and user-friendly app.
-
-•	 Complete project documentation uploaded to GitHub
