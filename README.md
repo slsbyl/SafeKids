@@ -104,38 +104,53 @@ Project Plan
 
 Team Task Distribution
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------
-## Week 1: Project Setup and UI Design
-- *Basmala:* Initialize Project  
-- *Basant:* Version Control  
-- *Slsabil:* UI - UX Design  
-- *Roaa:* Build Static UI  
-- *Dareen:* Build Static UI  
 
----
+#### Basmala
 
-## Week 2: API Integration and Dynamic Display
-- *Basmala:* Networking Setup  
-- *Basant:* Fetch Data  
-- *Slsabil:* Dynamic UI  
-- *Roaa:* Dynamic UI  
-- *Dareen:* Dynamic UI  
+Week 1: Initialize Project
 
----
+Week 2: Networking Setup
 
-## Week 3: Navigation and Detail Screen
-- *Basmala:* Implement Navigation  
-- *Basant:* Build Detail Screen  
-- *Slsabil:* Pass Data  
-- *Roaa:* Build Detail Screen  
-- *Dareen:* Unit Testing  
+Week 3: Implement Navigation
 
----
+Week 4: Implement Search
 
-## Week 4: Search, Security, and Final Polish
-- *Basmala:* Implement Search  
-- *Basant:* Address Security  
-- *Slsabil:* Functional Documentation  
-- *Roaa:* UI Polish  
-- *Dareen:* UI Polish
+#### Basant
 
+Week 1: Version Control
 
+Week 2: Fetch Data
+
+Week 3: Build Detail Screen
+
+Week 4: Address Security
+
+#### Salsabil 
+
+Week 1: UI - UX Design
+
+Week 2: Dynamic UI
+
+Week 3: Pass Data
+
+Week 4: Functional Documentation
+
+#### Roaa
+
+Week 1: Build Static UI
+
+Week 2: Dynamic UI
+
+Week 3: Build Detail Screen
+
+Week 4: UI Polish
+
+#### Dareen
+
+Week 1: Build Static UI
+
+Week 2: Dynamic UI
+
+Week 3: Unit Testing
+
+Week 4: UI Polish
