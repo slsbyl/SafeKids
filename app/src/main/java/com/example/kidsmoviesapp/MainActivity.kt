@@ -13,6 +13,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
@@ -30,22 +31,47 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun KidsMoviesApp() {
     var movies by remember { mutableStateOf(listOf<Movie>()) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
         scope.launch {
-            val response = RetrofitInstance.api.getKidsMovies(TmdbApi.API_KEY)
-            movies = response.results
+            try {
+                val response = RetrofitInstance.api.getKidsMovies(TmdbApi.API_KEY)
+                movies = response.results
+            } catch (e: Exception) {
+                e.printStackTrace()
+                errorMessage = "Error fetching movies: ${e.message}"
+            }
         }
     }
 
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
-        modifier = Modifier.padding(8.dp),
-        contentPadding = PaddingValues(8.dp)
-    ) {
-        items(movies) { movie ->
-            MovieCard(movie)
+    Column(modifier = Modifier.fillMaxSize().padding(8.dp)) {
+        if (movies.isEmpty() && errorMessage == null) {
+            Text(
+                text = "Loading movies...",
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.padding(16.dp)
+            )
+        }
+
+        if (errorMessage != null) {
+            Text(
+                text = errorMessage!!,
+                color = Color.Red,
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.padding(16.dp)
+            )
+        }
+
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(8.dp)
+        ) {
+            items(movies) { movie ->
+                MovieCard(movie)
+            }
         }
     }
 }
