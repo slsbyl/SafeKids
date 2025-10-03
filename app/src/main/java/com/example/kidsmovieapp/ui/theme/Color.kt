@@ -1,10 +1,7 @@
 package com.example.kidsmovieapp.ui.theme
 
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
 
 val Purple40 = Color(0xFF6650a4)
 val PurpleGrey40 = Color(0xFF625b71)
@@ -22,3 +19,12 @@ val DarkPurpleText = Color(0xFF6D11AF)
 val LavenderText = Color(0xFFC079FD)
 val VioletText = Color(0xFF9710F8)
 val BrightPurpleText = Color(0xFFAC45FD)
+
+val Gold = Color(0xFFFFC107)
+
+val backgroundColor = Brush.verticalGradient(
+    colors = listOf(PinkGradient, PurpleGradient, BlueGradient)
+)
+val buttonGradient = Brush.horizontalGradient(
+    colors = listOf(TealAccent, PinkAccent)
+)
