@@ -4,7 +4,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             MaterialTheme {
                 Surface {
-                    // TODO: HomeScreen UI will be handled in ui-HomeScreen branch
+
                     SafeKidsHomeScreen()
                 }
             }
