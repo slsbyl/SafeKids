@@ -1,0 +1,329 @@
+package com.example.kidsmovieapp
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.kidsmovieapp.ui.theme.*
+
+// Movies class
+data class Movie(
+    val title: String,
+    val posterResId: Int,
+    val rating: String,
+    val year: String,
+    val genres: List<String>,
+    val overview: String
+)
+
+val sampleMovie = Movie(
+    title = "The Amazing Adventure",
+    posterResId = R.drawable.placeholder,
+    rating = "4.8",
+    year = "2024",
+    genres = listOf("Adventure"),
+    overview = "Join our brave heroes on an incredible journey through magical lands filled with friendship, laughter, and amazing discoveries! This heartwarming adventure teaches kids about courage, teamwork, and believing in yourself."
+)
+
+
+class DetailScreen : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContent {
+            KidsMovieAppTheme {
+                MovieDetailScreen(movie = sampleMovie)
+            }
+        }
+    }
+}
+
+@Composable
+fun MovieDetailScreen(movie: Movie) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(backgroundColor)
+    ) {
+        // App Bar
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.White)
+                .padding(top = 26.dp, start = 20.dp, end = 20.dp, bottom = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Spacer(modifier = Modifier.height(36.dp))
+            // Back Button
+            IconButton(
+                onClick = { /* back */ },
+                modifier = Modifier.size(40.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Back",
+                    tint = Color.White,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            brush = Brush.horizontalGradient(listOf(BlueGradient, PinkGradient)),
+                            shape = CircleShape
+                        )
+                        .padding(8.dp)
+                )
+            }
+
+            Text(
+                text = "Movie Details ✨",
+                fontWeight = FontWeight.Bold,
+                color = DarkPurpleText,
+                modifier = Modifier.weight(1f),
+                textAlign = TextAlign.Center,
+                fontSize = 25.sp
+            )
+
+            Spacer(modifier = Modifier.size(20.dp))
+        }
+
+        // Movie poster ans title
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 20.dp)
+        ) {
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.Top
+            ) {
+                Image(
+                    painter = painterResource(id = movie.posterResId),
+                    contentDescription = movie.title,
+                    modifier = Modifier
+                        .width(130.dp)
+                        .height(190.dp)
+                        .clip(RoundedCornerShape(16.dp)),
+                    contentScale = ContentScale.Crop
+                )
+
+                Spacer(modifier = Modifier.width(16.dp))
+
+                Column {
+                    Text(
+                        text = movie.title,
+                        color = DarkPurpleText,
+                        fontSize = 28.sp,
+                        fontWeight = FontWeight.Bold,
+                        lineHeight = 28.sp
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        InfoTag(text = "G", backgroundColor = TealAccent, isCircle = true)
+                        Spacer(modifier = Modifier.width(8.dp))
+                        movie.genres.forEach { genre ->
+                            InfoTag(text = genre, backgroundColor = PinkAccent)
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        IconInfoTag(
+                            text = movie.rating,
+                            backgroundColor = Gold,
+                            icon = Icons.Default.Star,
+                            isCircle = true
+                        )
+
+                        Spacer(modifier = Modifier.width(8.dp))
+                        IconInfoTag(
+                            text = movie.year,
+                            backgroundColor = PurpleAccent,
+                            icon = Icons.Default.DateRange,
+                            isCircle = true
+                        )
+
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Description
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    Icons.Default.Info,
+                    contentDescription = "About",
+                    tint = PinkAccent
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "About this amazing movie!",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp,
+                    color = DarkPurpleText
+                )
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Card(
+                shape = RoundedCornerShape(20.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = movie.overview,
+                    modifier = Modifier.padding(18.dp),
+                    lineHeight = 22.sp,
+                    color = BrightPurpleText
+                )
+            }
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            // Trailer Button
+            Button(
+                onClick = { /* Watch Trailer */ },
+                shape = RoundedCornerShape(50),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
+                contentPadding = PaddingValues(),
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(buttonGradient),
+                    contentAlignment = Alignment.Center
+                ){
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Default.PlayArrow, contentDescription = null, tint = Color.White)
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            "Watch Trailer 📽️",
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 20.sp
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Favourites Button
+            Button(
+                onClick = { /* Add to Favorites */ },
+                shape = RoundedCornerShape(50),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.White
+                ),
+                border = BorderStroke(2.dp, PinkAccent)
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Default.FavoriteBorder, contentDescription = null, tint = PinkAccent)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        "Add to Favorites 💖",
+                        color = PinkAccent,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 20.sp
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(24.dp))
+        }
+    }
+}
+
+@Composable
+fun InfoTag(text: String, backgroundColor: Color, isCircle: Boolean = false) {
+    val shape = if (isCircle) CircleShape else RoundedCornerShape(50)
+    Box(
+        modifier = Modifier
+            .background(backgroundColor, shape)
+            .padding(horizontal = 10.dp, vertical = 4.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = text,
+            color = Color.White,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold
+        )
+    }
+}
+
+
+@Composable
+fun IconInfoTag(
+    text: String,
+    backgroundColor: Color,
+    icon: ImageVector,
+    isCircle: Boolean = false
+) {
+    val shape = if (isCircle) CircleShape else RoundedCornerShape(50)
+
+    Row(
+        modifier = Modifier
+            .background(backgroundColor, shape)
+            .padding(horizontal = 10.dp, vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = text,
+            tint = Color.White,
+            modifier = Modifier.size(16.dp)
+        )
+        Spacer(modifier = Modifier.width(6.dp))
+        Text(
+            text = text,
+            color = Color.White,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Bold
+        )
+    }
+}
+
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun MovieDetailScreenPreview() {
+    KidsMovieAppTheme {
+        MovieDetailScreen(movie = sampleMovie)
+    }
+}
