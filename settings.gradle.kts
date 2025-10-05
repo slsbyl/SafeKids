@@ -19,5 +19,11 @@ dependencyResolutionManagement {
     }
 }
 
+<<<<<<< HEAD
 rootProject.name = "KidsMovieApp"
 include(":app")
+=======
+rootProject.name = "HomeScreen"
+include(":app")
+ 
+>>>>>>> ui-HomeScreen

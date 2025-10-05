@@ -1,3 +1,7 @@
 <resources>
+<<<<<<< HEAD
     <string name="app_name">KidsMovieApp</string>
+=======
+    <string name="app_name">HomeScreen</string>
+>>>>>>> ui-HomeScreen
 </resources>
