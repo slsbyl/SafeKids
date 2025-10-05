@@ -1,4 +1,7 @@
 package com.example.kidsmovieapp.screens
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+
 
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
