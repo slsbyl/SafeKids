@@ -4,6 +4,12 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -35,11 +41,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -105,7 +113,7 @@ fun MovieDetailScreen(movie: Movie) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.White) // solid white background for the bar
+                    .background(Color.White)
                     .padding(top = 26.dp, start = 20.dp, end = 20.dp, bottom = 8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -141,7 +149,7 @@ fun MovieDetailScreen(movie: Movie) {
                     fontSize = 25.sp
                 )
 
-                Spacer(modifier = Modifier.size(40.dp)) // layout balance
+                Spacer(modifier = Modifier.size(40.dp))
             }
 
             // Scrollable below app bar
@@ -242,6 +250,18 @@ fun MovieDetailScreen(movie: Movie) {
                 Spacer(modifier = Modifier.weight(1f))
 
                 // Buttons
+                //Rotate play icon
+                val rotate = rememberInfiniteTransition(label = "rotate_play_icon")
+                val rotation by rotate.animateFloat(
+                    initialValue = 0f,
+                    targetValue = 360f,
+                    animationSpec = infiniteRepeatable(
+                        animation = tween(durationMillis = 3000, easing = LinearEasing),
+                        repeatMode = RepeatMode.Restart
+                    ),
+                    label = "icon_rotation"
+                )
+
                 Button(
                     onClick = { /* Watch Trailer */ },
                     shape = RoundedCornerShape(50),
@@ -260,7 +280,12 @@ fun MovieDetailScreen(movie: Movie) {
                             Icon(
                                 Icons.Default.PlayArrow,
                                 contentDescription = null,
-                                tint = Color.White
+                                tint = Color.White,
+                                modifier = Modifier
+                                    .graphicsLayer {
+                                        rotationZ = rotation
+                                    }
+                                    .size(24.dp)
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
