@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -300,6 +301,18 @@ fun MovieDetailScreen(movie: Movie) {
 
                 Spacer(modifier = Modifier.height(12.dp))
 
+                //Beats heart icon
+                val heartTransition = rememberInfiniteTransition(label = "heartBeat")
+                val scale by heartTransition.animateFloat(
+                    initialValue = 1f,
+                    targetValue = 1.4f,
+                    animationSpec = infiniteRepeatable(
+                        animation = tween(400, easing = LinearOutSlowInEasing),
+                        repeatMode = RepeatMode.Reverse
+                    ),
+                    label = "scaleAnim"
+                )
+
                 Button(
                     onClick = { /* Add to Favorites */ },
                     shape = RoundedCornerShape(50),
@@ -311,9 +324,14 @@ fun MovieDetailScreen(movie: Movie) {
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
-                            Icons.Default.FavoriteBorder,
+                            imageVector = Icons.Default.FavoriteBorder,
                             contentDescription = null,
-                            tint = PinkAccent
+                            tint = PinkAccent,
+                            modifier = Modifier
+                                .graphicsLayer(
+                                    scaleX = scale,
+                                    scaleY = scale
+                                )
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
