@@ -28,3 +28,13 @@ val backgroundColor = Brush.verticalGradient(
 val buttonGradient = Brush.horizontalGradient(
     colors = listOf(TealAccent, PinkAccent)
 )
+//Colors Of SplashScreen
+val CandyTurquoise = Color(0xFF00D4FF)
+val CandyYellow = Color(0xFFFFEB3B)
+val CandyPink = Color(0xFFFF69B4)
+val CandyLime = Color(0xFF32FF7E)
+val CandyOrange = Color(0xFFFFA726)
+val CandySky = Color(0xFF87CEEB)
+val CandyPurple = Color(0xFF9C27B0)
+val Pink=Color(0xFFFFD1DC)
+val purple=Color(0xFFE0BBFF)
