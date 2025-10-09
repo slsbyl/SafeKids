@@ -107,7 +107,7 @@ Team Task Distribution
 
 | *Week* | *Basmala*              | *Basant*             | *Slsybyl*              | *Roaa*              | *Dareen*          |
 |----------|---------------------------|------------------------|--------------------------|-----------------------|---------------------|
-| Week 1   | Initialize Project        | Version Control        | UI - UX Design           | Build Static UI       | Build Static UI     |
-| Week 2   | Networking Setup          | Fetch Data             | Dynamic UI               | Dynamic UI            | Dynamic UI          |
+| Week 1   | Initialize Project and Version Control |   Build Static UI   | UI - UX Design | Build Static UI       | Build Static UI     |
+| Week 2   | Networking and Api Setup   | Handling Data             | Dynamic UI           |  Dynamic UI            |     Dynamic UI      |
 | Week 3   | Implement Navigation      | Build Detail Screen    | Pass Data                | Build Detail Screen   | Unit Testing        |
 | Week 4   | Implement Search          | Address Security       | Functional Documentation | UI Polish             | UI Polish           |
