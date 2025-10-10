@@ -1,4 +1,5 @@
 package com.example.kidsmovieapp.screens
+
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.kidsmovieapp.ui.viewmodel.MovieViewModel
 import coil.compose.AsyncImage
@@ -14,12 +15,8 @@ import androidx.compose.material3.*
 import androidx.compose.ui.draw.scale
 import coil.compose.AsyncImage
 import kotlinx.coroutines.delay
-
-
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
-
-
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.Spring
@@ -94,6 +91,7 @@ import kotlin.math.sin
 import kotlin.random.Random
 import coil.compose.AsyncImage
 import androidx.compose.ui.layout.ContentScale
+import com.example.kidsmovieapp.data.remote.dto.MovieDto
 
 class HomeScreen {
 }
@@ -718,7 +716,10 @@ private fun CategoryCard(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SafeKidsHomeScreen(viewModel: MovieViewModel = viewModel()) {
+fun SafeKidsHomeScreen(
+    viewModel: MovieViewModel = viewModel(),
+    onMovieClick: (MovieDto) -> Unit
+) {
     val scrollState = rememberScrollState()
     val kidsMovies by viewModel.kidsMovies.collectAsState()
 
@@ -830,10 +831,9 @@ fun SafeKidsHomeScreen(viewModel: MovieViewModel = viewModel()) {
                                     MovieCardDynamic(
                                         title = movie.title ?: "No Title",
                                         rating = (movie.vote_average ?: 0.0).toFloat(),
-
-
                                         imageUrl = "https://image.tmdb.org/t/p/w500${movie.poster_path}",
-                                        modifier = Modifier.weight(1f)
+                                        modifier = Modifier.weight(1f),
+                                        onClick = { onMovieClick(movie) }
                                     )
                                 }
                                 if (rowMovies.size == 1) Spacer(Modifier.weight(1f))
@@ -859,7 +859,7 @@ private data class MovieData(
 @Preview(showBackground = true)
 @Composable
 private fun PreviewSafeKidsHomeScreen() {
-    SafeKidsHomeScreen()
+    SafeKidsHomeScreen(onMovieClick = {})
 }
 
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)

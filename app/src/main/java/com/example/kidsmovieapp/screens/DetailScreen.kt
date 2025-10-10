@@ -1,9 +1,5 @@
 package com.example.kidsmovieapp.screens
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
@@ -12,8 +8,8 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -25,8 +21,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.DateRange
@@ -38,10 +36,15 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -51,58 +54,64 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.kidsmovieapp.AnimatedBackground
-import com.example.kidsmovieapp.R
+import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
+import com.example.kidsmovieapp.data.remote.dto.MovieDto
 import com.example.kidsmovieapp.ui.theme.BlueGradient
 import com.example.kidsmovieapp.ui.theme.BrightPurpleText
 import com.example.kidsmovieapp.ui.theme.DarkPurpleText
 import com.example.kidsmovieapp.ui.theme.Gold
-import com.example.kidsmovieapp.ui.theme.KidsMovieAppTheme
 import com.example.kidsmovieapp.ui.theme.PinkAccent
 import com.example.kidsmovieapp.ui.theme.PinkGradient
 import com.example.kidsmovieapp.ui.theme.PurpleAccent
 import com.example.kidsmovieapp.ui.theme.TealAccent
+import com.example.kidsmovieapp.ui.theme.backgroundColor
 import com.example.kidsmovieapp.ui.theme.buttonGradient
+import com.example.kidsmovieapp.ui.viewmodel.MovieViewModel
+import com.example.kidsmovieapp.AnimatedBackground
 
-// Movies class
-data class Movie(
-    val title: String,
-    val posterResId: Int,
-    val rating: String,
-    val year: String,
-    val genres: List<String>,
-    val overview: String
-)
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DetailScreen(
+    movieId: Int,
+    viewModel: MovieViewModel = viewModel(),
+    onBackClicked: () -> Unit
+) {
+    LaunchedEffect(key1 = movieId) {
+        viewModel.getMovieDetails(movieId)
+    }
 
-val sampleMovie = Movie(
-    title = "The Amazing Adventure",
-    posterResId = R.drawable.placeholder,
-    rating = "4.8",
-    year = "2024",
-    genres = listOf("Adventure"),
-    overview = "Join our brave heroes on an incredible journey through magical lands filled with friendship, laughter, and amazing discoveries! This heartwarming adventure teaches kids about courage, teamwork, and believing in yourself."
-)
+    val movie by viewModel.selectedMovie.collectAsState()
 
-class MovieDetailScreen : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            KidsMovieAppTheme {
-                MovieDetailScreen(movie = sampleMovie)
+    Scaffold(
+        content = { paddingValues ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .background(Color.White)
+            ) {
+                if (movie == null || movie?.id != movieId) {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                } else {
+                    MovieDetailScreen(
+                        movie = movie!!,
+                        onBackClicked = onBackClicked
+                    )
+                }
             }
         }
-    }
+    )
 }
 
+
 @Composable
-fun MovieDetailScreen(movie: Movie) {
+fun MovieDetailScreen(movie: MovieDto, onBackClicked: () -> Unit) {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -112,6 +121,7 @@ fun MovieDetailScreen(movie: Movie) {
             modifier = Modifier
                 .fillMaxSize()
         ) {
+            //App bar
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -120,7 +130,7 @@ fun MovieDetailScreen(movie: Movie) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(
-                    onClick = { /* back */ },
+                    onClick = onBackClicked,
                     modifier = Modifier.size(40.dp)
                 ) {
                     Icon(
@@ -142,14 +152,14 @@ fun MovieDetailScreen(movie: Movie) {
                     )
                 }
 
-            Text(
-                text = "Movie Details ✨",
-                fontWeight = FontWeight.Bold,
-                color = DarkPurpleText,
-                modifier = Modifier.weight(1f),
-                textAlign = TextAlign.Center,
-                fontSize = 25.sp
-            )
+                Text(
+                    text = "Movie Details ✨",
+                    fontWeight = FontWeight.Bold,
+                    color = DarkPurpleText,
+                    modifier = Modifier.weight(1f),
+                    textAlign = TextAlign.Center,
+                    fontSize = 25.sp
+                )
 
                 Spacer(modifier = Modifier.size(40.dp))
             }
@@ -167,8 +177,8 @@ fun MovieDetailScreen(movie: Movie) {
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.Top
                 ) {
-                    Image(
-                        painter = painterResource(id = movie.posterResId),
+                    AsyncImage(
+                        model = "https://image.tmdb.org/t/p/w500${movie.poster_path}",
                         contentDescription = movie.title,
                         modifier = Modifier
                             .width(130.dp)
@@ -185,32 +195,36 @@ fun MovieDetailScreen(movie: Movie) {
                             color = DarkPurpleText,
                             fontSize = 28.sp,
                             fontWeight = FontWeight.Bold,
-                            lineHeight = 28.sp
+                            lineHeight = 30.sp
                         )
+
                         Spacer(modifier = Modifier.height(12.dp))
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             InfoTag(text = "G", backgroundColor = TealAccent, isCircle = true)
                             Spacer(modifier = Modifier.width(8.dp))
-                            movie.genres.forEach { genre ->
-                                InfoTag(text = genre, backgroundColor = PinkAccent)
-                            }
+                            InfoTag(text = "Movie", backgroundColor = PinkAccent)
                         }
+
                         Spacer(modifier = Modifier.height(12.dp))
+
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             IconInfoTag(
-                                text = movie.rating,
+                                text = String.format("%.1f", movie.vote_average ?: 0.0),
                                 backgroundColor = Gold,
                                 icon = Icons.Default.Star,
                                 isCircle = true
                             )
 
                             Spacer(modifier = Modifier.width(8.dp))
-                            IconInfoTag(
-                                text = movie.year,
-                                backgroundColor = PurpleAccent,
-                                icon = Icons.Default.DateRange,
-                                isCircle = true
-                            )
+
+                            movie.release_date?.let {
+                                IconInfoTag(
+                                    text = it.take(4), // Take just the year
+                                    backgroundColor = PurpleAccent,
+                                    icon = Icons.Default.DateRange,
+                                    isCircle = true
+                                )
+                            }
                         }
                     }
                 }
@@ -242,7 +256,7 @@ fun MovieDetailScreen(movie: Movie) {
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        text = movie.overview,
+                        text = movie.overview ?: "No overview available.",
                         modifier = Modifier.padding(18.dp),
                         lineHeight = 22.sp,
                         color = BrightPurpleText
@@ -396,13 +410,5 @@ fun IconInfoTag(
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold
         )
-    }
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun MovieDetailScreenPreview() {
-    KidsMovieAppTheme {
-        MovieDetailScreen(movie = sampleMovie)
     }
 }

@@ -53,4 +53,12 @@ class MovieViewModel : ViewModel() {
             }
         }
     }
+
+
+    fun selectMovie(movie: MovieDto) {
+        _selectedMovie.value = movie
+    }
+
+
 }
+
