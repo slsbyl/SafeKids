@@ -1,4 +1,21 @@
 package com.example.kidsmovieapp.screens
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.kidsmovieapp.ui.viewmodel.MovieViewModel
+import coil.compose.AsyncImage
+import androidx.compose.runtime.collectAsState
+import androidx.compose.material3.CircularProgressIndicator
+import com.google.gson.annotations.SerializedName
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.foundation.clickable
+//import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.material3.*
+//import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.draw.scale
+import coil.compose.AsyncImage
+import kotlinx.coroutines.delay
+
+
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 
@@ -75,6 +92,8 @@ import kotlinx.coroutines.delay
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.random.Random
+import coil.compose.AsyncImage
+import androidx.compose.ui.layout.ContentScale
 
 class HomeScreen {
 }
@@ -356,7 +375,7 @@ fun SafeKidsLogo(
                     )
             )
 
-            // Shield icon
+
             Icon(
                 imageVector = Icons.Default.Shield,
                 contentDescription = "Safe Kids Shield",
@@ -364,7 +383,7 @@ fun SafeKidsLogo(
                 tint = Color.Companion.White
             )
 
-            // Star accent
+
             Icon(
                 imageVector = Icons.Default.Star,
                 contentDescription = null,
@@ -699,54 +718,13 @@ private fun CategoryCard(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SafeKidsHomeScreen() {
+fun SafeKidsHomeScreen(viewModel: MovieViewModel = viewModel()) {
     val scrollState = rememberScrollState()
+    val kidsMovies by viewModel.kidsMovies.collectAsState()
 
-    val movies = remember {
-        listOf(
-            MovieData(
-                "The Amazing Adventure",
-                "Adventure",
-                4.8f,
-                listOf(
-                    SafeKidsColors.CandyPurple.copy(0.4f),
-                    SafeKidsColors.CandyTurquoise.copy(0.4f)
-                )
-            ),
-            MovieData(
-                "Space Friends Forever",
-                "Animation",
-                4.6f,
-                listOf(SafeKidsColors.CandyPink.copy(0.4f), SafeKidsColors.CandyOrange.copy(0.4f))
-            ),
-            MovieData(
-                "Ocean Quest",
-                "Family",
-                4.7f,
-                listOf(
-                    SafeKidsColors.CandyTurquoise.copy(0.4f),
-                    SafeKidsColors.CandyMint.copy(0.4f)
-                )
-            ),
-            MovieData(
-                "Magic School Bus",
-                "Educational",
-                4.9f,
-                listOf(SafeKidsColors.CandyYellow.copy(0.4f), SafeKidsColors.CandyLime.copy(0.4f))
-            ),
-            MovieData(
-                "Superhero Pets",
-                "Comedy",
-                4.5f,
-                listOf(SafeKidsColors.CandyOrange.copy(0.4f), SafeKidsColors.CandyPink.copy(0.4f))
-            ),
-            MovieData(
-                "Rainbow Kingdom",
-                "Fantasy",
-                4.8f,
-                listOf(SafeKidsColors.CandyPurple.copy(0.4f), SafeKidsColors.CandyPink.copy(0.4f))
-            )
-        )
+
+    LaunchedEffect(Unit) {
+        viewModel.loadKidsMovies()
     }
 
     Scaffold(
@@ -755,55 +733,49 @@ fun SafeKidsHomeScreen() {
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = SafeKidsColors.HeaderBackground
                 ),
-                title = {
-                    SafeKidsLogo(size = 48.dp)
-                },
+                title = { SafeKidsLogo(size = 48.dp) },
                 actions = {
-                    Box(modifier = Modifier.Companion.padding(end = 12.dp)) {
+                    Box(modifier = Modifier.padding(end = 12.dp)) {
                         SearchButton()
                     }
                 },
-                modifier = Modifier.Companion.shadow(elevation = 2.dp)
+                modifier = Modifier.shadow(elevation = 2.dp)
             )
         }
     ) { paddingValues ->
         Box(
-            modifier = Modifier.Companion
+            modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-
             AnimatedPlayfulBackground(
-                modifier = Modifier.Companion.matchParentSize(),
+                modifier = Modifier.matchParentSize(),
                 particleCount = 18
             )
 
             Column(
-                modifier = Modifier.Companion
+                modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(scrollState)
                     .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
 
+
                 Card(
-                    modifier = Modifier.Companion.fillMaxWidth(),
-                    shape = androidx.compose.foundation.shape.RoundedCornerShape(24.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = SafeKidsColors.CardBackground
-                    ),
-                    elevation = CardDefaults.cardElevation(
-                        defaultElevation = 4.dp
-                    )
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(24.dp),
+                    colors = CardDefaults.cardColors(containerColor = SafeKidsColors.CardBackground),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                 ) {
                     Column(
-                        modifier = Modifier.Companion.padding(20.dp),
+                        modifier = Modifier.padding(20.dp),
                         verticalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
                         Text(
                             text = "Discover Amazing Movies! ✨",
                             fontSize = 18.sp,
-                            fontWeight = FontWeight.Companion.Bold,
+                            fontWeight = FontWeight.Bold,
                             color = SafeKidsColors.TextPrimary
                         )
                         Text(
@@ -814,138 +786,67 @@ fun SafeKidsHomeScreen() {
                     }
                 }
 
+
                 Row(
-                    verticalAlignment = Alignment.Companion.CenterVertically,
+                    verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Star,
                         contentDescription = null,
                         tint = SafeKidsColors.CandyYellow,
-                        modifier = Modifier.Companion.size(22.dp)
+                        modifier = Modifier.size(22.dp)
                     )
                     Text(
                         text = "Popular Kids Movies",
                         fontSize = 18.sp,
-                        fontWeight = FontWeight.Companion.Bold,
+                        fontWeight = FontWeight.Bold,
                         color = SafeKidsColors.TextPrimary
                     )
                     Icon(
                         imageVector = Icons.Default.Favorite,
                         contentDescription = null,
                         tint = SafeKidsColors.CandyPink,
-                        modifier = Modifier.Companion.size(20.dp)
+                        modifier = Modifier.size(20.dp)
                     )
                 }
 
-                Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                    movies.chunked(2).forEach { rowMovies ->
-                        Row(
-                            modifier = Modifier.Companion.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(16.dp)
-                        ) {
-                            rowMovies.forEach { movie ->
-                                MovieCard(
-                                    title = movie.title,
-                                    genre = movie.genre,
-                                    ageRating = "G",
-                                    rating = movie.rating,
-                                    posterGradient = movie.posterGradient,
-                                    modifier = Modifier.Companion.weight(1f)
-                                )
-                            }
-                            // Fill empty space if odd number
-                            if (rowMovies.size == 1) {
-                                Spacer(Modifier.Companion.weight(1f))
+
+                if (kidsMovies.isEmpty()) {
+                    Box(
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 40.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator(color = SafeKidsColors.CandyPurple)
+                    }
+                } else {
+                    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                        kidsMovies.chunked(2).forEach { rowMovies ->
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(16.dp)
+                            ) {
+                                rowMovies.forEach { movie ->
+                                    MovieCardDynamic(
+                                        title = movie.title ?: "No Title",
+                                        rating = (movie.vote_average ?: 0.0).toFloat(),
+
+
+                                        imageUrl = "https://image.tmdb.org/t/p/w500${movie.poster_path}",
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                }
+                                if (rowMovies.size == 1) Spacer(Modifier.weight(1f))
                             }
                         }
                     }
                 }
 
-                Row(
-                    verticalAlignment = Alignment.Companion.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Category,
-                        contentDescription = null,
-                        tint = SafeKidsColors.CandyTurquoise,
-                        modifier = Modifier.Companion.size(22.dp)
-                    )
-                    Text(
-                        text = "Browse by Category",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Companion.Bold,
-                        color = SafeKidsColors.TextPrimary
-                    )
-                }
-
-                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-
-                    Row(
-                        modifier = Modifier.Companion.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        CategoryCard(
-                            title = "Adventure",
-                            description = "Exciting journeys!",
-                            emoji = "🗺️",
-                            gradientColors = listOf(
-                                SafeKidsColors.CandyPink,
-                                Color(0xFFFF6347),
-                                SafeKidsColors.CandyOrange
-                            ),
-                            modifier = Modifier.Companion.weight(1f)
-                        )
-                        CategoryCard(
-                            title = "Comedy",
-                            description = "Laugh out loud!",
-                            emoji = "😂",
-                            gradientColors = listOf(
-                                SafeKidsColors.CandyLime,
-                                SafeKidsColors.CandyMint,
-                                SafeKidsColors.CandyTurquoise
-                            ),
-                            modifier = Modifier.Companion.weight(1f)
-                        )
-                    }
-
-                    Row(
-                        modifier = Modifier.Companion.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        CategoryCard(
-                            title = "Musical",
-                            description = "Sing along!",
-                            emoji = "🎵",
-                            gradientColors = listOf(
-                                SafeKidsColors.CandyYellow,
-                                SafeKidsColors.CandyOrange,
-                                Color(0xFFFF6347)
-                            ),
-                            modifier = Modifier.Companion.weight(1f)
-                        )
-                        CategoryCard(
-                            title = "Fantasy",
-                            description = "Magical worlds!",
-                            emoji = "✨",
-                            gradientColors = listOf(
-                                SafeKidsColors.CandyPurple,
-                                SafeKidsColors.CandyPink,
-                                Color(0xFF6366F1)
-                            ),
-                            modifier = Modifier.Companion.weight(1f)
-                        )
-                    }
-                }
-
-
-                Spacer(Modifier.Companion.height(20.dp))
+                Spacer(Modifier.height(20.dp))
             }
         }
     }
 }
-
 
 private data class MovieData(
     val title: String,
@@ -953,6 +854,7 @@ private data class MovieData(
     val rating: Float,
     val posterGradient: List<Color>
 )
+
 
 @Preview(showBackground = true)
 @Composable
@@ -981,5 +883,94 @@ private fun PreviewSearchButton() {
             .padding(24.dp)
     ) {
         SearchButton()
+    }
+}
+@Composable
+fun MovieCardDynamic(
+    title: String,
+    rating: Float,
+    imageUrl: String,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {}
+) {
+    var isPressed by remember { mutableStateOf(false) }
+
+
+    val scale by animateFloatAsState(
+        targetValue = if (isPressed) 0.95f else 1f,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessMedium
+        ),
+        label = "poster_scale"
+    )
+
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .scale(scale)
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = ripple(),
+                onClick = {
+                    isPressed = true
+                    onClick()
+                }
+            ),
+        shape = RoundedCornerShape(24.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+
+
+            AsyncImage(
+                model = imageUrl,
+                contentDescription = title,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(220.dp)
+                    .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
+                    .background(Color.LightGray.copy(alpha = 0.2f))
+            )
+
+            Column(
+                modifier = Modifier.padding(12.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = title,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = SafeKidsColors.TextPrimary,
+                    maxLines = 2
+                )
+
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Default.Star,
+                        contentDescription = null,
+                        tint = SafeKidsColors.CandyYellow,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Spacer(Modifier.width(4.dp))
+                    Text(
+                        text = String.format("%.1f", rating),
+                        fontSize = 12.sp,
+                        color = SafeKidsColors.TextSecondary
+                    )
+                }
+            }
+        }
+    }
+
+
+    LaunchedEffect(isPressed) {
+        if (isPressed) {
+            delay(150)
+            isPressed = false
+        }
     }
 }
