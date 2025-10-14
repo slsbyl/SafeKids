@@ -116,14 +116,14 @@ fun SearchScreen(
                         )
                     }
 
-                Spacer(modifier = Modifier.width(12.dp))
-                Text(
-                    "Search Movies ✨",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF6D11AF)
-                )
-}
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Text(
+                        "Search Movies ✨",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF6D11AF)
+                    )
+                }
             }
         }
     ) { paddingValues ->
