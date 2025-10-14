@@ -12,6 +12,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -74,6 +75,34 @@ import com.example.kidsmovieapp.ui.theme.backgroundColor
 import com.example.kidsmovieapp.ui.theme.buttonGradient
 import com.example.kidsmovieapp.ui.viewmodel.MovieViewModel
 import com.example.kidsmovieapp.AnimatedBackground
+
+
+
+
+val genreMap = mapOf(
+    28 to "Action",
+    12 to "Adventure",
+    16 to "Animation",
+    35 to "Comedy",
+    80 to "Crime",
+    99 to "Documentary",
+    18 to "Drama",
+    10751 to "Family",
+    14 to "Fantasy",
+    36 to "History",
+    27 to "Horror",
+    10402 to "Music",
+    9648 to "Mystery",
+    10749 to "Romance",
+    878 to "Science Fiction",
+    10770 to "TV Movie",
+    53 to "Thriller",
+    10752 to "War",
+    37 to "Western"
+)
+
+
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -199,14 +228,28 @@ fun MovieDetailScreen(movie: MovieDto, onBackClicked: () -> Unit) {
                         )
 
                         Spacer(modifier = Modifier.height(12.dp))
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            InfoTag(text = "G", backgroundColor = TealAccent, isCircle = true)
-                            Spacer(modifier = Modifier.width(8.dp))
-                            InfoTag(text = "Movie", backgroundColor = PinkAccent)
+
+                        //Show Genres
+                        val genreNames = movie.genres?.map { it.name }
+                            ?: movie.genre_ids?.map { genreMap[it] ?: "Unknown" }
+                            ?: emptyList()
+
+                        FlowRow(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            genreNames.forEach { genreName ->
+                                InfoTag(
+                                    text = genreName,
+                                    backgroundColor = TealAccent
+                                )
+                            }
                         }
+
 
                         Spacer(modifier = Modifier.height(12.dp))
 
+                        //Show rating and year
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             IconInfoTag(
                                 text = String.format("%.1f", movie.vote_average ?: 0.0),
@@ -219,7 +262,7 @@ fun MovieDetailScreen(movie: MovieDto, onBackClicked: () -> Unit) {
 
                             movie.release_date?.let {
                                 IconInfoTag(
-                                    text = it.take(4), // Take just the year
+                                    text = it.take(4),
                                     backgroundColor = PurpleAccent,
                                     icon = Icons.Default.DateRange,
                                     isCircle = true
