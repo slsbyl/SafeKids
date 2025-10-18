@@ -45,7 +45,10 @@ fun NavigationGraph(navController: NavHostController) {
         composable("search") {
             SearchScreen(
                 viewModel = viewModel,
-                onClose = { navController.popBackStack() }
+                onClose = { navController.popBackStack() },
+                onMovieClick = { movie ->
+                    navController.navigate("detail/${movie.id}")
+                }
             )
         }
 
