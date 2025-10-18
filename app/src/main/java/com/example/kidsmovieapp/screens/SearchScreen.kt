@@ -28,13 +28,15 @@ import coil.compose.AsyncImage
 import com.example.kidsmovieapp.R
 import com.example.kidsmovieapp.ui.viewmodel.MovieViewModel
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.kidsmovieapp.data.remote.dto.MovieDto
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
     viewModel: MovieViewModel = viewModel(),
-    onClose: () -> Unit = {}
+    onClose: () -> Unit = {},
+    onMovieClick: (MovieDto) -> Unit = {}
 ) {
     var query by remember { mutableStateOf(TextFieldValue("")) }
 
@@ -262,7 +264,8 @@ fun SearchScreen(
                             MovieItem(
                                 title = movie.title ?:"No title",
                                 posterPath = movie.poster_path,
-                                rating = (movie.vote_average ?: 0.0).toFloat()
+                                rating = (movie.vote_average ?: 0.0).toFloat(),
+                                onClick = { onMovieClick(movie) }
                             )
                         }
                     }
@@ -349,11 +352,13 @@ fun CenteredDefaultContent(){
 fun MovieItem(
     title: String,
     posterPath: String?,
-    rating: Float
+    rating: Float,
+    onClick: () -> Unit
 ){
     Card (
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .clickable { onClick() },
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ){
