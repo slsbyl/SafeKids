@@ -718,7 +718,8 @@ private fun CategoryCard(
 @Composable
 fun SafeKidsHomeScreen(
     viewModel: MovieViewModel = viewModel(),
-    onMovieClick: (MovieDto) -> Unit
+    onMovieClick: (MovieDto) -> Unit,
+    onSearchClick: () -> Unit
 ) {
     val scrollState = rememberScrollState()
     val kidsMovies by viewModel.kidsMovies.collectAsState()
@@ -737,7 +738,7 @@ fun SafeKidsHomeScreen(
                 title = { SafeKidsLogo(size = 48.dp) },
                 actions = {
                     Box(modifier = Modifier.padding(end = 12.dp)) {
-                        SearchButton()
+                        SearchButton(onClick = onSearchClick)
                     }
                 },
                 modifier = Modifier.shadow(elevation = 2.dp)
@@ -859,7 +860,7 @@ private data class MovieData(
 @Preview(showBackground = true)
 @Composable
 private fun PreviewSafeKidsHomeScreen() {
-    SafeKidsHomeScreen(onMovieClick = {})
+    SafeKidsHomeScreen(onMovieClick = {} , onSearchClick = {})
 }
 
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)

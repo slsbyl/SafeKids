@@ -35,6 +35,9 @@ fun NavigationGraph(navController: NavHostController) {
                 viewModel = viewModel,
                 onMovieClick = { movie ->
                     navController.navigate("detail/${movie.id}")
+                },
+                onSearchClick ={
+                    navController.navigate("search")
                 }
             )
         }
