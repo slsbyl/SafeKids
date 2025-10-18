@@ -185,7 +185,7 @@ fun SearchScreen(
 
             //Result
             if (query.text.isEmpty()) {
-                CenteredDefaultContent(rotation)
+                CenteredDefaultContent()
 
             } else if (filteredResults.isEmpty()) {
                 val infiniteTransitionSearch = rememberInfiniteTransition(label = "searchIconAnim")
@@ -273,7 +273,7 @@ fun SearchScreen(
 }
 
 @Composable
-fun CenteredDefaultContent(rotation: Float){
+fun CenteredDefaultContent(){
     val infiniteTransition = rememberInfiniteTransition(label = "logoAnim")
     val rotationLogo by infiniteTransition.animateFloat(
         initialValue = 0f,
