@@ -7,7 +7,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class MovieRepository {
-
     private val api = NetworkModule.api
 
     //Fetch kids movies for home screen
@@ -22,6 +21,15 @@ class MovieRepository {
 
     //Fetch movie details for detail screen
     suspend fun getMovieDetails(movieId: Int): MovieDto = withContext(Dispatchers.IO) {
-        api.getMovieDetails(movieId)
+        val movie = api.getMovieDetails(movieId)
+        val videos = api.getMovieVideos(movieId).results
+        val trailer = videos.firstOrNull {
+            it.site == "YouTube" && it.type == "Trailer"
+        }
+
+        movie.copy(
+            trailerUrl = trailer?.let { "https://www.youtube.com/watch?v=${it.key}" }
+        )
     }
+
 }
