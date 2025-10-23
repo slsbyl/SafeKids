@@ -1,5 +1,7 @@
 package com.example.kidsmovieapp.screens
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
@@ -75,8 +77,8 @@ import com.example.kidsmovieapp.ui.theme.backgroundColor
 import com.example.kidsmovieapp.ui.theme.buttonGradient
 import com.example.kidsmovieapp.ui.viewmodel.MovieViewModel
 import com.example.kidsmovieapp.AnimatedBackground
-
-
+import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
 
 
 val genreMap = mapOf(
@@ -141,6 +143,7 @@ fun DetailScreen(
 
 @Composable
 fun MovieDetailScreen(movie: MovieDto, onBackClicked: () -> Unit) {
+    val context = LocalContext.current
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -321,38 +324,45 @@ fun MovieDetailScreen(movie: MovieDto, onBackClicked: () -> Unit) {
                     label = "icon_rotation"
                 )
 
-                Button(
-                    onClick = { /* Watch Trailer */ },
-                    shape = RoundedCornerShape(50),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
-                    contentPadding = PaddingValues(),
-                ) {
-                    Box(
+
+                movie?.trailerUrl?.let { trailerUrl ->
+                    Button(
+                        onClick = {
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(trailerUrl))
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            context.startActivity(intent)
+                        },
+                        shape = RoundedCornerShape(50),
                         modifier = Modifier
-                            .fillMaxSize()
-                            .background(buttonGradient),
-                        contentAlignment = Alignment.Center
+                            .fillMaxWidth()
+                            .height(56.dp),
+                        contentPadding = PaddingValues(),
                     ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                Icons.Default.PlayArrow,
-                                contentDescription = null,
-                                tint = Color.White,
-                                modifier = Modifier
-                                    .graphicsLayer {
-                                        rotationZ = rotation
-                                    }
-                                    .size(24.dp)
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(
-                                "Watch Trailer 📽️",
-                                color = Color.White,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 20.sp
-                            )
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(buttonGradient),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    Icons.Default.PlayArrow,
+                                    contentDescription = null,
+                                    tint = Color.White,
+                                    modifier = Modifier
+                                        .graphicsLayer {
+                                            rotationZ = rotation
+                                        }
+                                        .size(24.dp)
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    "Watch Trailer 📽️",
+                                    color = Color.White,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 20.sp
+                                )
+                            }
                         }
                     }
                 }

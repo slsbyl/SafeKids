@@ -13,7 +13,8 @@ data class MovieDto(
     val release_date: String?,
     @SerializedName("vote_average") val vote_average: Double?,
     val genre_ids: List<Int>?,
-    val genres: List<GenreDto>?
+    val genres: List<GenreDto>?,
+    @SerializedName("trailer") val trailerUrl: String? = null
 ) : Parcelable
 
 @Parcelize
@@ -21,3 +22,12 @@ data class GenreDto(
     val id: Int,
     val name: String
 ) : Parcelable
+
+data class VideoResponse(val results: List<VideoItem>)
+
+data class VideoItem(
+    val key: String,
+    val name: String,
+    val site: String,
+    val type: String
+)
