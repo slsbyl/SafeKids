@@ -2,6 +2,7 @@ package com.example.kidsmovieapp.data.remote.api
 
 import com.example.kidsmovieapp.data.remote.dto.MovieDto
 import com.example.kidsmovieapp.data.remote.dto.MovieListResponseDto
+import com.example.kidsmovieapp.data.remote.dto.VideoResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -27,4 +28,10 @@ interface TmdbApi {
     suspend fun getMovieDetails(
         @Path("movie_id") movieId: Int
     ): MovieDto
+
+    @GET("movie/{movie_id}/videos")
+    suspend fun getMovieVideos(
+        @Path("movie_id") movieId: Int
+    ): VideoResponse
+
 }
