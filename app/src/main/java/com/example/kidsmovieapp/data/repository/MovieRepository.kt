@@ -2,34 +2,45 @@ package com.example.kidsmovieapp.data.repository
 
 import com.example.kidsmovieapp.data.remote.api.NetworkModule
 import com.example.kidsmovieapp.data.remote.dto.MovieDto
-import com.example.kidsmovieapp.data.remote.dto.MovieListResponseDto
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class MovieRepository {
+
     private val api = NetworkModule.api
 
-    //Fetch kids movies for home screen
     suspend fun getKidsMovies(page: Int = 1): List<MovieDto> = withContext(Dispatchers.IO) {
-        api.getKidsMovies(page = page).results
+        api.getKidsMovies(
+            certificationCountry = "US",
+            certification = "PG",
+            genreId = "16",
+            includeAdult = false,
+            sortBy = "popularity.desc",
+            language = "en-US",
+            voteAverage = 6.0,
+            page = page
+        ).results
     }
 
-    //Fetch movie's names for search screen
+
     suspend fun searchMovies(query: String): List<MovieDto> = withContext(Dispatchers.IO) {
         api.searchMovies(query = query).results
     }
 
-    //Fetch movie details for detail screen
+
     suspend fun getMovieDetails(movieId: Int): MovieDto = withContext(Dispatchers.IO) {
         val movie = api.getMovieDetails(movieId)
+
+
         val videos = api.getMovieVideos(movieId).results
         val trailer = videos.firstOrNull {
-            it.site == "YouTube" && it.type == "Trailer"
+            it.site.equals("YouTube", ignoreCase = true) && it.type.equals("Trailer", ignoreCase = true)
         }
+
 
         movie.copy(
             trailerUrl = trailer?.let { "https://www.youtube.com/watch?v=${it.key}" }
         )
     }
-
 }
+

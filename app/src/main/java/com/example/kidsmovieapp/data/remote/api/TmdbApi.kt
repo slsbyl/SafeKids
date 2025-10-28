@@ -12,12 +12,15 @@ interface TmdbApi {
     @GET("discover/movie")
     suspend fun getKidsMovies(
         @Query("certification_country") certificationCountry: String = "US",
-        @Query("certification.lte") certification: String = "G",
-        @Query("with_genres") genreId: String? = "16,10751",
+        @Query("certification.lte") certification: String = "PG",
+        @Query("with_genres") genreId: String? = "16",
         @Query("include_adult") includeAdult: Boolean = false,
         @Query("sort_by") sortBy: String = "popularity.desc",
+        @Query("language") language: String = "en-US",
+        @Query("vote_average.gte") voteAverage: Double = 6.0,
         @Query("page") page: Int = 1
     ): MovieListResponseDto
+
 
     @GET("search/movie")
     suspend fun searchMovies(
