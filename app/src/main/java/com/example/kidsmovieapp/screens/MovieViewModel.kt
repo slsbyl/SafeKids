@@ -8,9 +8,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class MovieViewModel : ViewModel() {
-
-    private val repository = MovieRepository()
+class MovieViewModel(
+    private val repository: MovieRepository
+) : ViewModel() {
 
     private val _kidsMovies = MutableStateFlow<List<MovieDto>>(emptyList())
     val kidsMovies: StateFlow<List<MovieDto>> = _kidsMovies
@@ -21,15 +21,43 @@ class MovieViewModel : ViewModel() {
     private val _selectedMovie = MutableStateFlow<MovieDto?>(null)
     val selectedMovie: StateFlow<MovieDto?> = _selectedMovie
 
-    // Fetch kids movies
+
+    private var currentPage = 1
+    private var isLoading = false
+    private var hasMorePages = true
+
     fun loadKidsMovies() {
+        if (isLoading || !hasMorePages) return
+
+        isLoading = true
         viewModelScope.launch {
             try {
-                _kidsMovies.value = repository.getKidsMovies()
+                val newMovies = repository.getKidsMovies(page = currentPage)
+                if (newMovies.isEmpty()) {
+                    hasMorePages = false
+                } else {
+                    _kidsMovies.value = _kidsMovies.value + newMovies
+                    currentPage++
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
+            } finally {
+                isLoading = false
             }
         }
+    }
+
+
+    fun loadMoreKidsMovies() {
+        loadKidsMovies()
+    }
+
+    // Optional: refresh from start
+    fun refreshKidsMovies() {
+        currentPage = 1
+        hasMorePages = true
+        _kidsMovies.value = emptyList()
+        loadKidsMovies()
     }
 
     // Search by name
@@ -43,7 +71,7 @@ class MovieViewModel : ViewModel() {
         }
     }
 
-    // Get movie details
+
     fun getMovieDetails(movieId: Int) {
         viewModelScope.launch {
             try {
@@ -54,11 +82,9 @@ class MovieViewModel : ViewModel() {
         }
     }
 
-
     fun selectMovie(movie: MovieDto) {
         _selectedMovie.value = movie
     }
-
-
 }
+
 
