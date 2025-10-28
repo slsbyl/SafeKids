@@ -12,7 +12,6 @@ object NetworkModule {
     private const val BASE_URL = "https://api.themoviedb.org/3/"
     private const val API_KEY = "165a1f27bba225269a0d15654811198f"
 
-    // Interceptor لإضافة الـ API Key لكل طلب تلقائيًا
     private val apiKeyInterceptor = Interceptor { chain ->
         val original = chain.request()
         val originalUrl = original.url
