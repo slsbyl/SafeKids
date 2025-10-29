@@ -10,37 +10,54 @@ class MovieRepository {
     private val api = NetworkModule.api
 
     suspend fun getKidsMovies(page: Int = 1): List<MovieDto> = withContext(Dispatchers.IO) {
-        api.getKidsMovies(
+        val response = api.getKidsMovies(
             certificationCountry = "US",
-            certification = "PG",
-            genreId = "16",
+            // Added min and max ratings
+            certificationMin = "G",
+            certificationMax = "PG",
+            genreId = "16,10751", // Animation + Family
             includeAdult = false,
             sortBy = "popularity.desc",
             language = "en-US",
             voteAverage = 6.0,
             page = page
-        ).results
+        )
+
+        response.results.filter { movie ->
+            val safeTitle = !movie.title.contains("MA", ignoreCase = true)
+            val safeOverview = movie.overview?.contains("violence", ignoreCase = true) == false &&
+                    movie.overview?.contains("horror", ignoreCase = true) == false &&
+                    movie.overview?.contains("adult", ignoreCase = true) == false
+            safeTitle && safeOverview
+        }
     }
 
-
     suspend fun searchMovies(query: String): List<MovieDto> = withContext(Dispatchers.IO) {
-        api.searchMovies(query = query).results
+        val response = api.searchMovies(query = query)
+        response.results.filter { movie ->
+            val safeTitle = !movie.title.contains("MA", ignoreCase = true)
+            val safeOverview = movie.overview?.contains("violence", ignoreCase = true) == false &&
+                    movie.overview?.contains("horror", ignoreCase = true) == false
+            safeTitle && safeOverview
+        }
     }
 
 
     suspend fun getMovieDetails(movieId: Int): MovieDto = withContext(Dispatchers.IO) {
         val movie = api.getMovieDetails(movieId)
 
-
         val videos = api.getMovieVideos(movieId).results
         val trailer = videos.firstOrNull {
-            it.site.equals("YouTube", ignoreCase = true) && it.type.equals("Trailer", ignoreCase = true)
+            it.site.equals("YouTube", ignoreCase = true) &&
+                    it.type.equals("Trailer", ignoreCase = true)
         }
-
 
         movie.copy(
             trailerUrl = trailer?.let { "https://www.youtube.com/watch?v=${it.key}" }
         )
     }
 }
+
+
+
 
