@@ -52,7 +52,6 @@ class MovieViewModel(
         loadKidsMovies()
     }
 
-    // Optional: refresh from start
     fun refreshKidsMovies() {
         currentPage = 1
         hasMorePages = true
@@ -60,7 +59,6 @@ class MovieViewModel(
         loadKidsMovies()
     }
 
-    // Search by name
     fun searchMovies(query: String) {
         viewModelScope.launch {
             try {
