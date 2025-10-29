@@ -21,15 +21,18 @@ class MovieViewModel(
     private val _selectedMovie = MutableStateFlow<MovieDto?>(null)
     val selectedMovie: StateFlow<MovieDto?> = _selectedMovie
 
+    // NEW: Expose loading state for progress indicator
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading
 
     private var currentPage = 1
-    private var isLoading = false
     private var hasMorePages = true
 
     fun loadKidsMovies() {
-        if (isLoading || !hasMorePages) return
+        // Avoid double loading
+        if (_isLoading.value || !hasMorePages) return
 
-        isLoading = true
+        _isLoading.value = true
         viewModelScope.launch {
             try {
                 val newMovies = repository.getKidsMovies(page = currentPage)
@@ -42,11 +45,10 @@ class MovieViewModel(
             } catch (e: Exception) {
                 e.printStackTrace()
             } finally {
-                isLoading = false
+                _isLoading.value = false
             }
         }
     }
-
 
     fun loadMoreKidsMovies() {
         loadKidsMovies()
@@ -69,7 +71,6 @@ class MovieViewModel(
         }
     }
 
-
     fun getMovieDetails(movieId: Int) {
         viewModelScope.launch {
             try {
@@ -84,5 +85,3 @@ class MovieViewModel(
         _selectedMovie.value = movie
     }
 }
-
-
