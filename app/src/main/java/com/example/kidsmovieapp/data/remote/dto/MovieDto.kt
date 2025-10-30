@@ -14,6 +14,8 @@ data class MovieDto(
     @SerializedName("vote_average") val vote_average: Double?,
     val genre_ids: List<Int>?,
     val genres: List<GenreDto>?,
+
+    @SerializedName("adult") val adult: Boolean? = false,
     @SerializedName("trailer") val trailerUrl: String? = null
 ) : Parcelable
 
