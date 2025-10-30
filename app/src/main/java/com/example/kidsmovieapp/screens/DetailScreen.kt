@@ -1,5 +1,6 @@
 package com.example.kidsmovieapp.screens
 
+
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.animation.core.LinearEasing
@@ -31,6 +32,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.PlayArrow
@@ -78,6 +80,7 @@ import com.example.kidsmovieapp.ui.theme.buttonGradient
 import com.example.kidsmovieapp.ui.viewmodel.MovieViewModel
 import com.example.kidsmovieapp.AnimatedBackground
 import androidx.compose.runtime.*
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 
 
@@ -144,6 +147,8 @@ fun DetailScreen(
 @Composable
 fun MovieDetailScreen(movie: MovieDto, onBackClicked: () -> Unit) {
     val context = LocalContext.current
+    var isLiked by remember { mutableStateOf(false) }
+
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -199,6 +204,7 @@ fun MovieDetailScreen(movie: MovieDto, onBackClicked: () -> Unit) {
             // Scrollable below app bar
             Column(
                 modifier = Modifier
+                    .verticalScroll(rememberScrollState())
                     .fillMaxSize()
                     .padding(horizontal = 20.dp)
             ) {
@@ -324,6 +330,7 @@ fun MovieDetailScreen(movie: MovieDto, onBackClicked: () -> Unit) {
                     label = "icon_rotation"
                 )
 
+                Spacer(modifier = Modifier.height(12.dp))
 
                 movie?.trailerUrl?.let { trailerUrl ->
                     Button(
@@ -382,7 +389,7 @@ fun MovieDetailScreen(movie: MovieDto, onBackClicked: () -> Unit) {
                 )
 
                 Button(
-                    onClick = { /* Add to Favorites */ },
+                    onClick = { isLiked = !isLiked },
                     shape = RoundedCornerShape(50),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -392,7 +399,7 @@ fun MovieDetailScreen(movie: MovieDto, onBackClicked: () -> Unit) {
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
-                            imageVector = Icons.Default.FavoriteBorder,
+                            imageVector = if (isLiked) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                             contentDescription = null,
                             tint = PinkAccent,
                             modifier = Modifier
@@ -403,7 +410,7 @@ fun MovieDetailScreen(movie: MovieDto, onBackClicked: () -> Unit) {
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            "Add to Favorites 💖",
+                            text = if (isLiked) "You liked it! ❤️" else "Like the movie 💖",
                             color = PinkAccent,
                             fontWeight = FontWeight.Bold,
                             fontSize = 20.sp
