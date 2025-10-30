@@ -837,8 +837,7 @@ fun SafeKidsHomeScreen(
                         rating = (movie.vote_average ?: 0.0).toFloat(),
                         imageUrl = "https://image.tmdb.org/t/p/w500${movie.poster_path}",
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .height(280.dp),
+                            .fillMaxWidth(),
                         onClick = { onMovieClick(movie) }
                     )
 
