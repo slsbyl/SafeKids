@@ -8,9 +8,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class MovieViewModel : ViewModel() {
-
-    private val repository = MovieRepository()
+class MovieViewModel(
+    private val repository: MovieRepository = MovieRepository()
+) : ViewModel() {
 
     private val _kidsMovies = MutableStateFlow<List<MovieDto>>(emptyList())
     val kidsMovies: StateFlow<List<MovieDto>> = _kidsMovies
@@ -21,18 +21,46 @@ class MovieViewModel : ViewModel() {
     private val _selectedMovie = MutableStateFlow<MovieDto?>(null)
     val selectedMovie: StateFlow<MovieDto?> = _selectedMovie
 
-    // Fetch kids movies
+    // NEW: Expose loading state for progress indicator
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading
+
+    private var currentPage = 1
+    private var hasMorePages = true
+
     fun loadKidsMovies() {
+        // Avoid double loading
+        if (_isLoading.value || !hasMorePages) return
+
+        _isLoading.value = true
         viewModelScope.launch {
             try {
-                _kidsMovies.value = repository.getKidsMovies()
+                val newMovies = repository.getKidsMovies(page = currentPage)
+                if (newMovies.isEmpty()) {
+                    hasMorePages = false
+                } else {
+                    _kidsMovies.value = _kidsMovies.value + newMovies
+                    currentPage++
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
+            } finally {
+                _isLoading.value = false
             }
         }
     }
 
-    // Search by name
+    fun loadMoreKidsMovies() {
+        loadKidsMovies()
+    }
+
+    fun refreshKidsMovies() {
+        currentPage = 1
+        hasMorePages = true
+        _kidsMovies.value = emptyList()
+        loadKidsMovies()
+    }
+
     fun searchMovies(query: String) {
         viewModelScope.launch {
             try {
@@ -43,7 +71,6 @@ class MovieViewModel : ViewModel() {
         }
     }
 
-    // Get movie details
     fun getMovieDetails(movieId: Int) {
         viewModelScope.launch {
             try {
@@ -54,11 +81,7 @@ class MovieViewModel : ViewModel() {
         }
     }
 
-
     fun selectMovie(movie: MovieDto) {
         _selectedMovie.value = movie
     }
-
-
 }
-
