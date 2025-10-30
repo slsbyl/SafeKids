@@ -27,6 +27,7 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -35,6 +36,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -42,6 +44,12 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -49,6 +57,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Movie
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Shield
 import androidx.compose.material.icons.filled.Star
@@ -67,6 +76,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -714,16 +724,15 @@ private fun CategoryCard(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun SafeKidsHomeScreen(
     viewModel: MovieViewModel = viewModel(),
     onMovieClick: (MovieDto) -> Unit,
     onSearchClick: () -> Unit
 ) {
-    val scrollState = rememberScrollState()
     val kidsMovies by viewModel.kidsMovies.collectAsState()
-
+    val isLoading by viewModel.isLoading.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.loadKidsMovies()
@@ -755,99 +764,108 @@ fun SafeKidsHomeScreen(
                 particleCount = 18
             )
 
-            Column(
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
                 modifier = Modifier
                     .fillMaxSize()
-                    .verticalScroll(scrollState)
                     .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(20.dp)
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
 
-
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(24.dp),
-                    colors = CardDefaults.cardColors(containerColor = SafeKidsColors.CardBackground),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-                ) {
-                    Column(
-                        modifier = Modifier.padding(20.dp),
-                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                item(span = { GridItemSpan(2) }) {
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(24.dp),
+                        colors = CardDefaults.cardColors(containerColor = SafeKidsColors.CardBackground),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                     ) {
-                        Text(
-                            text = "Discover Amazing Movies! ✨",
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = SafeKidsColors.TextPrimary
-                        )
-                        Text(
-                            text = "Safe and fun adventures just for you! 🎬",
-                            fontSize = 14.sp,
-                            color = SafeKidsColors.TextSecondary
-                        )
-                    }
-                }
-
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Star,
-                        contentDescription = null,
-                        tint = SafeKidsColors.CandyYellow,
-                        modifier = Modifier.size(22.dp)
-                    )
-                    Text(
-                        text = "Popular Kids Movies",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = SafeKidsColors.TextPrimary
-                    )
-                    Icon(
-                        imageVector = Icons.Default.Favorite,
-                        contentDescription = null,
-                        tint = SafeKidsColors.CandyPink,
-                        modifier = Modifier.size(20.dp)
-                    )
-                }
-
-
-                if (kidsMovies.isEmpty()) {
-                    Box(
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 40.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator(color = SafeKidsColors.CandyPurple)
-                    }
-                } else {
-                    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                        kidsMovies.chunked(2).forEach { rowMovies ->
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(16.dp)
-                            ) {
-                                rowMovies.forEach { movie ->
-                                    MovieCardDynamic(
-                                        title = movie.title ?: "No Title",
-                                        rating = (movie.vote_average ?: 0.0).toFloat(),
-                                        imageUrl = "https://image.tmdb.org/t/p/w500${movie.poster_path}",
-                                        modifier = Modifier.weight(1f),
-                                        onClick = { onMovieClick(movie) }
-                                    )
-                                }
-                                if (rowMovies.size == 1) Spacer(Modifier.weight(1f))
-                            }
+                        Column(
+                            modifier = Modifier.padding(20.dp),
+                            verticalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            Text(
+                                text = "✨ Discover Amazing Movies!",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = SafeKidsColors.TextPrimary
+                            )
+                            Text(
+                                text = "🎬 Safe and fun adventures just for you!",
+                                fontSize = 14.sp,
+                                color = SafeKidsColors.TextSecondary
+                            )
                         }
                     }
                 }
 
-                Spacer(Modifier.height(20.dp))
+
+                item(span = { GridItemSpan(2) }) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Favorite,
+                            contentDescription = null,
+                            tint = SafeKidsColors.CandyPink,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = "Popular Kids Movies",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = SafeKidsColors.TextPrimary
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Icon(
+                            imageVector = Icons.Default.Star,
+                            contentDescription = null,
+                            tint = SafeKidsColors.CandyYellow,
+                            modifier = Modifier.size(22.dp)
+                        )
+                    }
+                }
+
+
+                items(kidsMovies.size) { index ->
+                    val movie = kidsMovies[index]
+                    MovieCardDynamic(
+                        title = movie.title ?: "No Title",
+                        rating = (movie.vote_average ?: 0.0).toFloat(),
+                        imageUrl = "https://image.tmdb.org/t/p/w500${movie.poster_path}",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(280.dp),
+                        onClick = { onMovieClick(movie) }
+                    )
+
+                    if (index >= kidsMovies.size - 4 && !isLoading) {
+                        viewModel.loadMoreKidsMovies()
+                    }
+                }
+
+
+                item(span = { GridItemSpan(2) }) {
+                    if (isLoading) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(24.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator(color = SafeKidsColors.CandyPurple)
+                        }
+                    }
+                }
             }
         }
     }
 }
+
+
 
 private data class MovieData(
     val title: String,
