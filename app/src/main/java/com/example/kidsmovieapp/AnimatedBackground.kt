@@ -150,7 +150,7 @@ fun AnimatedBackground(
                 FloatingShape.BALLOON -> drawBalloon(
                     Offset(particle.x, particle.y),
                     particle.size,
-                    color /* rotation ignored for balloon */
+                    color
                 )
 
                 FloatingShape.CLOUD -> drawCloud(
@@ -163,7 +163,6 @@ fun AnimatedBackground(
     }
 }
 
-// Rotate by degrees
 private fun rotatePoint(center: Offset, point: Offset, degrees: Float): Offset {
     val rad = degrees * Math.PI / 180.0
     val cosA = cos(rad).toFloat()

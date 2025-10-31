@@ -12,10 +12,10 @@ class MovieRepository {
     suspend fun getKidsMovies(page: Int = 1): List<MovieDto> = withContext(Dispatchers.IO) {
         val response = api.getKidsMovies(
             certificationCountry = "US",
-            // Added min and max ratings
+            // min and max ratings
             certificationMin = "G",
             certificationMax = "PG",
-            genreId = "16,10751", // Animation + Family
+            genreId = "16,10751",
             includeAdult = false,
             sortBy = "popularity.desc",
             language = "en-US",

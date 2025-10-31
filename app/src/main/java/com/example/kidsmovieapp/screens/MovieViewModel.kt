@@ -21,7 +21,7 @@ class MovieViewModel(
     private val _selectedMovie = MutableStateFlow<MovieDto?>(null)
     val selectedMovie: StateFlow<MovieDto?> = _selectedMovie
 
-    // NEW: Expose loading state for progress indicator
+
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 

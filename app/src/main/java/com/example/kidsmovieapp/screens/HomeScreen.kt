@@ -9,9 +9,7 @@ import com.google.gson.annotations.SerializedName
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.clickable
-//import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.material3.*
-//import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.draw.scale
 import coil.compose.AsyncImage
 import kotlinx.coroutines.delay

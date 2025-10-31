@@ -77,21 +77,19 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
-    // Retrofit & OkHttp
+
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 
-    // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
 
-    // Lifecycle & ViewModel
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.4")
-    // Coil for images
+
     implementation("io.coil-kt:coil-compose:2.6.0")
     debugImplementation(libs.androidx.ui.tooling)
     implementation("androidx.navigation:navigation-compose:2.8.2")
-    // --- Unit testing (required) ---
+
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
     testImplementation("io.mockk:mockk:1.13.9")
