@@ -2,6 +2,7 @@ package com.example.kidsmovieapp.screens
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,8 +17,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.input.pointer.motionEventSpy
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
@@ -29,7 +33,6 @@ import com.example.kidsmovieapp.R
 import com.example.kidsmovieapp.ui.viewmodel.MovieViewModel
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.kidsmovieapp.data.remote.dto.MovieDto
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -110,7 +113,9 @@ fun SearchScreen(
                             )
                         }
                     }
-                    IconButton(onClick = { }) {
+                    IconButton(onClick = {},
+                        enabled = false
+                    ) {
                         Icon(
                             Icons.Default.Search,
                             contentDescription = "Search",
@@ -129,6 +134,7 @@ fun SearchScreen(
             }
         }
     ) { paddingValues ->
+        val focusManager = LocalFocusManager.current
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -139,11 +145,24 @@ fun SearchScreen(
                 )
                 .padding(paddingValues)
                 .padding(16.dp)
+                .clickable(
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }
+                ) {
+                    focusManager.clearFocus()
+                }
         ) {
             // Search Box
+            var isFocused by remember { mutableStateOf(false) }
             OutlinedTextField(
                 value = query,
                 onValueChange = { query = it },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(12.dp, shape = RoundedCornerShape(50.dp))
+                    .onFocusChanged { focusState ->
+                        isFocused = focusState.isFocused
+                    },
                 placeholder = {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
@@ -153,15 +172,9 @@ fun SearchScreen(
                         Text("🎬", fontSize = 16.sp)
                     }
                 },
-                singleLine = true,
-
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .shadow(12.dp, shape = RoundedCornerShape(50.dp)),
-
                 shape = RoundedCornerShape(50.dp),
                 colors = TextFieldDefaults.colors(
-                    focusedIndicatorColor = Color(0xFFFF69B4),
+                    focusedIndicatorColor =  if (isFocused) Color(0xFFFF69B4) else Color(0xFFC079FD),
                     unfocusedIndicatorColor = Color(0xFFC079FD),
                     cursorColor = Color(0xFFC079FD),
                     unfocusedContainerColor = Color.White,
@@ -173,7 +186,7 @@ fun SearchScreen(
                             .size(32.dp)
                             .graphicsLayer {
                                 rotationZ = rotation
-                                alpha = glowAlpha
+                                alpha = if (isFocused) glowAlpha else 0.3f
                                 spotShadowColor = Color.Gray
                             },
                         contentAlignment = Alignment.Center
@@ -325,7 +338,7 @@ fun CenteredDefaultContent(){
 
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            "Start your movie adventure! 🌟",
+            "Start your movie adventure!🌟",
             fontSize = 25.sp,
             fontWeight = FontWeight.Bold,
             color = Color(0xFF6D11AF)
@@ -390,6 +403,3 @@ fun MovieItem(
 fun PreviewSearchScreen() {
     SearchScreen()
 }
-
-
-
