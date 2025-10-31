@@ -73,6 +73,7 @@ fun SearchScreen(
         ),
         label = "glowAnim"
     )
+    // Top Bar
     Scaffold(
         topBar = {
             Box(
