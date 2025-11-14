@@ -107,7 +107,7 @@ Team Task Distribution
 
 | *Week* | *Basmala*              | *Basant*             | *Slsybyl*              | *Roaa*                             | *Dareen*              |
 |----------|---------------------------|------------------------|--------------------------|------------------------------------|-----------------------|
-| Week 1   | Initialize Project and version control| Splash screen UI      | UI - UX Design           | SearchScreen Static UI             | Build Static UI       |
-| Week 2   | API and Networking Setup          | View Model            | Dynamic UI               | SearchScreen Dynamic UI            | Dynamic UI            |
-| Week 3   | Implement Navigation      |  link sreach screen and detail screen  | Pass Data                | link Home screen and detail screen | Unit Testing          |
-| Week 4   | unit test         | home screen edit    | Functional Documentation | SearchScreen edit                         | UI polish             |
+| Week 1   | Initialize Project and version control| Splash screen UI      | UI - UX Design           | SearchScreen Static UI             | Detail screen Static UI       |
+| Week 2   | API and Networking Setup          | View Model            | Dynamic UI               | SearchScreen Dynamic UI            | Detail screen Dynamic UI          |
+| Week 3   | Implement Navigation      |  link sreach screen and detail screen  | Pass Data                | link Home screen and detail screen | Add watch trailer button |
+| Week 4   | unit test         | home screen edit    | Functional Documentation | SearchScreen edit                         | Edit like button            |
