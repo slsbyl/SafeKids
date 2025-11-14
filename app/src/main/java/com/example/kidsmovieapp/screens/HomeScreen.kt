@@ -139,11 +139,11 @@ private data class FloatingParticle(
     val size: Float,
     val speedY: Float,
     val speedX: Float,
-    var rotation: Float,
-    val rotationSpeed: Float,
+    var rotation: Float,   // زاويه دوران الشكل حاليا
+    val rotationSpeed: Float,  // كل ثانيه الشكل يدور بزاويه قد ايه
     val shape: FloatingShape,
     val color: Color,
-    val baseAlpha: Float
+    val baseAlpha: Float // شفافيه
 )
 
 @Composable
@@ -151,9 +151,9 @@ private fun AnimatedPlayfulBackground(
     modifier: Modifier = Modifier.Companion,
     particleCount: Int = 18
 ) {
-    val random = remember { Random(System.currentTimeMillis()) }
-    val particles = remember { mutableStateListOf<FloatingParticle>() }
-
+    val random = remember { Random(System.currentTimeMillis()) } //ارقام راندوم للون و الحجم و السرعه
+    val particles = remember { mutableStateListOf<FloatingParticle>() } //ليست بكل الاشكال اللى هتترسم عالشاشه
+//FloatingParticle كلاس بيخزن كل بيانات الشكل مكانه لونه حجمه سرعته اتجاهه نوعه
     val infiniteTransition = rememberInfiniteTransition(label = "bg_animation")
     val animationPhase by infiniteTransition.animateFloat(
         initialValue = 0f,
@@ -288,6 +288,7 @@ private fun DrawScope.drawStar(
 private fun DrawScope.drawHeart(
     center: Offset,
     size: Float,
+
     color: Color,
     rotation: Float
 ) {
@@ -489,234 +490,6 @@ private fun SearchButton(
     LaunchedEffect(isPressed) {
         if (isPressed) {
             delay(150)
-            isPressed = false
-        }
-    }
-}
-
-@Composable
-private fun MovieCard(
-    title: String,
-    genre: String,
-    ageRating: String,
-    rating: Float,
-    posterGradient: List<Color>,
-    onClick: () -> Unit = {},
-    modifier: Modifier = Modifier.Companion
-) {
-    var isPressed by remember { mutableStateOf(false) }
-    val scale by animateFloatAsState(
-        targetValue = if (isPressed) 0.95f else 1f,
-        animationSpec = spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy,
-            stiffness = Spring.StiffnessMedium
-        ),
-        label = "movie_card_scale"
-    )
-
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .scale(scale)
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = ripple(),
-                onClick = {
-                    isPressed = true
-                    onClick()
-                }
-            ),
-        shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = SafeKidsColors.CardBackground
-        ),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 8.dp
-        )
-    ) {
-        Column {
-
-            Box(
-                modifier = Modifier.Companion
-                    .fillMaxWidth()
-                    .height(180.dp)
-                    .background(
-                        brush = Brush.Companion.verticalGradient(colors = posterGradient)
-                    )
-            ) {
-
-                Surface(
-                    modifier = Modifier.Companion
-                        .align(Alignment.Companion.TopStart)
-                        .padding(8.dp),
-                    color = SafeKidsColors.CandyLime,
-                    shape = CircleShape,
-                    shadowElevation = 2.dp
-                ) {
-                    Text(
-                        text = ageRating,
-                        color = Color.Companion.White,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Companion.Bold,
-                        modifier = Modifier.Companion.padding(horizontal = 10.dp, vertical = 5.dp)
-                    )
-                }
-
-
-                Surface(
-                    modifier = Modifier.Companion
-                        .align(Alignment.Companion.TopEnd)
-                        .padding(8.dp),
-                    color = SafeKidsColors.CandyYellow,
-                    shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
-                    shadowElevation = 2.dp
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.Companion.CenterVertically,
-                        modifier = Modifier.Companion.padding(horizontal = 8.dp, vertical = 5.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Star,
-                            contentDescription = null,
-                            tint = Color(0xFF8B6E00),
-                            modifier = Modifier.Companion.size(14.dp)
-                        )
-                        Spacer(Modifier.Companion.width(4.dp))
-                        Text(
-                            text = String.format("%.1f", rating),
-                            color = Color(0xFF8B6E00),
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Companion.Bold
-                        )
-                    }
-                }
-            }
-
-            Column(
-                modifier = Modifier.Companion.padding(12.dp),
-                verticalArrangement = Arrangement.spacedBy(6.dp)
-            ) {
-                Text(
-                    text = title,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Companion.Bold,
-                    color = SafeKidsColors.TextPrimary,
-                    maxLines = 2
-                )
-
-                Surface(
-                    color = SafeKidsColors.CandyPurple.copy(alpha = 0.12f),
-                    shape = androidx.compose.foundation.shape.RoundedCornerShape(10.dp)
-                ) {
-                    Text(
-                        text = genre,
-                        fontSize = 11.sp,
-                        color = SafeKidsColors.CandyPurple,
-                        fontWeight = FontWeight.Companion.SemiBold,
-                        modifier = Modifier.Companion.padding(horizontal = 10.dp, vertical = 5.dp)
-                    )
-                }
-            }
-        }
-    }
-
-    LaunchedEffect(isPressed) {
-        if (isPressed) {
-            delay(100)
-            isPressed = false
-        }
-    }
-}
-
-@Composable
-private fun CategoryCard(
-    title: String,
-    description: String,
-    emoji: String,
-    gradientColors: List<Color>,
-    onClick: () -> Unit = {},
-    modifier: Modifier = Modifier.Companion
-) {
-    var isPressed by remember { mutableStateOf(false) }
-    val scale by animateFloatAsState(
-        targetValue = if (isPressed) 0.95f else 1f,
-        animationSpec = spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy,
-            stiffness = Spring.StiffnessMedium
-        ),
-        label = "category_card_scale"
-    )
-
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .scale(scale)
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = ripple(),
-                onClick = {
-                    isPressed = true
-                    onClick()
-                }
-            ),
-        shape = androidx.compose.foundation.shape.RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.Companion.Transparent
-        ),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 8.dp
-        )
-    ) {
-        Box(
-            modifier = Modifier.Companion
-                .fillMaxWidth()
-                .background(
-                    brush = Brush.Companion.horizontalGradient(colors = gradientColors)
-                )
-                .padding(16.dp)
-        ) {
-
-            Text(
-                text = emoji,
-                fontSize = 36.sp,
-                modifier = Modifier.Companion
-                    .align(Alignment.Companion.TopEnd)
-                    .padding(4.dp),
-                color = Color.Companion.White.copy(alpha = 0.2f)
-            )
-
-            Column {
-                Text(
-                    text = title,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Companion.Bold,
-                    color = Color.Companion.White
-                )
-                Spacer(Modifier.Companion.height(4.dp))
-                Text(
-                    text = description,
-                    fontSize = 12.sp,
-                    color = Color.Companion.White.copy(alpha = 0.9f),
-                    fontWeight = FontWeight.Companion.Medium
-                )
-            }
-
-
-            Icon(
-                imageVector = Icons.Default.Star,
-                contentDescription = null,
-                tint = Color.Companion.White.copy(alpha = 0.3f),
-                modifier = Modifier.Companion
-                    .size(14.dp)
-                    .align(Alignment.Companion.TopStart)
-            )
-        }
-    }
-
-
-    LaunchedEffect(isPressed) {
-        if (isPressed) {
-            delay(100)
             isPressed = false
         }
     }
