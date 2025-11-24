@@ -1,4 +1,5 @@
 package com.example.kidsmovieapp.screens
+import androidx.compose.ui.text.style.TextOverflow
 
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.kidsmovieapp.ui.viewmodel.MovieViewModel
@@ -154,18 +155,20 @@ private fun AnimatedPlayfulBackground(
     val random = remember { Random(System.currentTimeMillis()) } //ارقام راندوم للون و الحجم و السرعه
     val particles = remember { mutableStateListOf<FloatingParticle>() } //ليست بكل الاشكال اللى هتترسم عالشاشه
 //FloatingParticle كلاس بيخزن كل بيانات الشكل مكانه لونه حجمه سرعته اتجاهه نوعه
-    val infiniteTransition = rememberInfiniteTransition(label = "bg_animation")
+
+    val infiniteTransition = rememberInfiniteTransition(label = "bg_animation")  // هنا بنقول للـ Compose نعمل Animation لقيمة عدد عشري float
+    // label = "bg_animation"  ده ليبل بيسهل التعرف على الانيميشن لما اعمل ديبجنح
     val animationPhase by infiniteTransition.animateFloat(
         initialValue = 0f,
         targetValue = 1f,
         animationSpec = infiniteRepeatable(
-            animation = tween(3000, easing = LinearEasing),
-            repeatMode = RepeatMode.Restart
+            animation = tween(3000, easing = LinearEasing),  // الحركه هتستمر 3 ثوانى من 0 ل 1 و lineareasimg يعنى الحركه ثابته مش هتسرع ولا هتبطأ
+            repeatMode = RepeatMode.Restart  // لما توصل القيمه 1 ترجه 0 و لوب على كده
         ),
         label = "phase"
     )
-
-    val gradientBrush = remember {
+   // فى كومبوز اى مكون هيتحدث او يتعمله ريكومبوز كل مره هيحصل تغيير ف كل مره الكود هيعمل تدرج ف الالوان و ده هيبطأ الابليكيشن فالريميمبر بتخلى القيمه محفوظه ف الميمورى ف مش هرسم من جديد هستخدم القيمه اللى اتعملت قبل كده
+    val gradientBrush = remember {   // هنا بنعمل تدرج لوني عمودى من فوق وردى و اى نقطه تحت بيبي بلو
         Brush.Companion.verticalGradient(
             colors = listOf(
                 SafeKidsColors.BgPinkLight,
@@ -176,9 +179,9 @@ private fun AnimatedPlayfulBackground(
     }
 
     Canvas(modifier = modifier.background(gradientBrush)) {
-        if (particles.isEmpty()) {
-            val shapes = FloatingShape.values()
-            val colors = listOf(
+        if (particles.isEmpty()) {    // لو لسه الليست فاضيه يعنى اول مره نرسم هنعمل بارتكلز جديده
+            val shapes = FloatingShape.values() // ديه هترجع ليست بالاشكال عشان نختار منها بكل راندوم
+            val colors = listOf(        // كل بارتكل هيبقى عندى لون راندوم من دول
                 SafeKidsColors.CandyPink,
                 SafeKidsColors.CandyTurquoise,
                 SafeKidsColors.CandyLime,
@@ -206,12 +209,12 @@ private fun AnimatedPlayfulBackground(
                 )
             }
         }
-
+        // بحدث الموقع و الدوران
         particles.forEach { particle ->
             particle.y -= particle.speedY
             particle.x += particle.speedX
             particle.rotation += particle.rotationSpeed
-
+            // لو البارتكل خرج بره الشاشه يرجعه
             if (particle.y < -particle.size) {
                 particle.y = size.height + particle.size
                 particle.x = random.nextFloat() * size.width
@@ -221,8 +224,11 @@ private fun AnimatedPlayfulBackground(
 
             val twinkle =
                 0.5f + 0.5f * sin((animationPhase * 2 * Math.PI + particle.x / 100).toFloat())
+//
             val alpha = (particle.baseAlpha * twinkle).coerceIn(0.1f, 0.35f)
+//
             val color = particle.color.copy(alpha = alpha)
+//
 
             when (particle.shape) {
                 FloatingShape.STAR -> drawStar(
@@ -346,13 +352,13 @@ fun SafeKidsLogo(
     size: Dp = 50.dp,
     modifier: Modifier = Modifier.Companion
 ) {
-    Row(
+    Row( // بيحط كل العناصر جوه صف أفقي
         modifier = modifier,
         verticalAlignment = Alignment.Companion.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
 
-        Box(
+        Box(  // بتمثل الدايره الكبيره ف اللوجو
             modifier = Modifier.Companion
                 .size(size)
                 .clip(CircleShape)
@@ -368,7 +374,7 @@ fun SafeKidsLogo(
             contentAlignment = Alignment.Companion.Center
         ) {
 
-            Box(
+            Box(   // طبقه شفافه جوه الدايره الكبيره بتدي لمعان
                 modifier = Modifier.Companion
                     .fillMaxSize()
                     .clip(CircleShape)
@@ -383,7 +389,7 @@ fun SafeKidsLogo(
             )
 
 
-            Icon(
+            Icon( // ده الدرع ف وسط الدايره
                 imageVector = Icons.Default.Shield,
                 contentDescription = "Safe Kids Shield",
                 modifier = Modifier.Companion.size(size * 0.5f),
@@ -391,7 +397,7 @@ fun SafeKidsLogo(
             )
 
 
-            Icon(
+            Icon( // ده النجمه
                 imageVector = Icons.Default.Star,
                 contentDescription = null,
                 modifier = Modifier.Companion
@@ -401,7 +407,7 @@ fun SafeKidsLogo(
             )
         }
 
-        Column(
+        Column(   // ده التكست جوه الدايره
             verticalArrangement = Arrangement.spacedBy(0.dp)
         ) {
             Text(
@@ -432,12 +438,13 @@ fun SafeKidsLogo(
 }
 
 
-@Composable
+@Composable   // معناه ان الفانكشن ديه هترسم حاجه عالشاشه
 private fun SearchButton(
-    onClick: () -> Unit = {},
-    modifier: Modifier = Modifier.Companion
+    onClick: () -> Unit = {},  //اى كود هيتنفذ لما اليوزر يضغط
+    modifier: Modifier = Modifier.Companion //ده بيسمحلى اتحكم ف شكل الزر و حجمه و مكانه لما استخدمه ف مكان تانى
 ) {
-    var isPressed by remember { mutableStateOf(false) }
+    var isPressed by remember { mutableStateOf(false) } //isPressed بيحدد اذا كان الزر مضغوط او لا
+    //بيخلى القيمه محفوظه لما اجى ارسم الواجهه
     val scale by animateFloatAsState(
         targetValue = if (isPressed) 0.9f else 1f,
         animationSpec = spring(
@@ -446,11 +453,12 @@ private fun SearchButton(
         ),
         label = "search_button_scale"
     )
+      // لما اليوزر يضغط على الزر سكيل هتصغر البوتون كحركه ضغط سبرينج نوع الحركه لما اسيب البوتون ترجع ل 1
 
-    Box(
+    Box(  // الزرار اللى بره
         modifier = modifier
             .size(48.dp)
-            .scale(scale)
+            .scale(scale) // تكبير/تصغير حسب حالة الضغط
             .clip(CircleShape)
             .background(
                 brush = Brush.Companion.radialGradient(
@@ -476,7 +484,7 @@ private fun SearchButton(
                 .size(36.dp)
                 .clip(CircleShape)
                 .background(Color.Companion.White),
-            contentAlignment = Alignment.Companion.Center
+            contentAlignment = Alignment.Companion.Center // اى حاجه ف البوكس هتكون ف التص
         ) {
             Icon(
                 imageVector = Icons.Default.Search,
@@ -543,7 +551,6 @@ fun SafeKidsHomeScreen(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-
                 item(span = { GridItemSpan(2) }) {
                     Card(
                         modifier = Modifier.fillMaxWidth(),
@@ -569,7 +576,6 @@ fun SafeKidsHomeScreen(
                         }
                     }
                 }
-
 
                 item(span = { GridItemSpan(2) }) {
                     Row(
@@ -600,15 +606,14 @@ fun SafeKidsHomeScreen(
                     }
                 }
 
-
                 items(kidsMovies.size) { index ->
                     val movie = kidsMovies[index]
+
                     MovieCardDynamic(
                         title = movie.title ?: "No Title",
                         rating = (movie.vote_average ?: 0.0).toFloat(),
                         imageUrl = "https://image.tmdb.org/t/p/w500${movie.poster_path}",
-                        modifier = Modifier
-                            .fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth(),
                         onClick = { onMovieClick(movie) }
                     )
 
@@ -616,7 +621,6 @@ fun SafeKidsHomeScreen(
                         viewModel.loadMoreKidsMovies()
                     }
                 }
-
 
                 item(span = { GridItemSpan(2) }) {
                     if (isLoading) {
@@ -626,7 +630,9 @@ fun SafeKidsHomeScreen(
                                 .padding(24.dp),
                             contentAlignment = Alignment.Center
                         ) {
-                            CircularProgressIndicator(color = SafeKidsColors.CandyPurple)
+                            CircularProgressIndicator(
+                                color = SafeKidsColors.CandyPurple
+                            )
                         }
                     }
                 }
@@ -634,7 +640,6 @@ fun SafeKidsHomeScreen(
         }
     }
 }
-
 
 
 private data class MovieData(
@@ -684,7 +689,6 @@ fun MovieCardDynamic(
 ) {
     var isPressed by remember { mutableStateOf(false) }
 
-
     val scale by animateFloatAsState(
         targetValue = if (isPressed) 0.95f else 1f,
         animationSpec = spring(
@@ -712,7 +716,6 @@ fun MovieCardDynamic(
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
 
-
             AsyncImage(
                 model = imageUrl,
                 contentDescription = title,
@@ -734,8 +737,10 @@ fun MovieCardDynamic(
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     color = SafeKidsColors.TextPrimary,
-                    maxLines = 2
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis 
                 )
+
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
@@ -754,7 +759,6 @@ fun MovieCardDynamic(
             }
         }
     }
-
 
     LaunchedEffect(isPressed) {
         if (isPressed) {
