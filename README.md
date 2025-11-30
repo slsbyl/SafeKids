@@ -1,5 +1,5 @@
 # Safe-Kids
-#### Kids Movies App – a safe and fun cartoon app for children under supervision of digital Egyptian pioneers intiative.
+#### Kids Movies App – a safe and fun cartoon app for children under the supervision of the Digital Egyptian Pioneers initiative.
 ![Kids Movies App – preview](image.jpeg)
 Team Members
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -11,7 +11,7 @@ Team Members
 
 Project Overview
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------
-The Kids Movies App is created to give children a safe and fun place to watch animated movies. It provides a curated collection of movies that are suitable for kids, with a simple and friendly design. The project will be developed using Android Studio for mobile development .
+The Kids Movies App is created to give children a safe and fun place to watch animated movies. It provides a curated collection of movies that are suitable for kids, with a simple and friendly design. The project will be developed using Android Studio for mobile development.
 
 Project Objectives
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -105,9 +105,13 @@ Project Plan
 Team Task Distribution
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-| *Week* | *Basmala*              | *Basant*             | *Slsybyl*              | *Roaa*              | *Dareen*          |
-|----------|---------------------------|------------------------|--------------------------|-----------------------|---------------------|
-| Week 1   | Initialize Project        | Version Control        | UI - UX Design           | Build Static UI       | Build Static UI     |
-| Week 2   | Networking Setup          | Fetch Data             | Dynamic UI               | Dynamic UI            | Dynamic UI          |
-| Week 3   | Implement Navigation      | Build Detail Screen    | Pass Data                | Build Detail Screen   | Unit Testing        |
-| Week 4   | Implement Search          | Address Security       | Functional Documentation | UI Polish             | UI Polish           |
+| *Week* | *Basmala*              | *Basant*             | *Slsbyl*              | *Roaa*                             | *Dareen*              |
+|----------|---------------------------|------------------------|--------------------------|------------------------------------|-----------------------|
+| Week 1   | Initialize Project and version control| Splash screen UI      | UI - UX Design           | SearchScreen Static UI             | Detail screen Static UI       |
+| Week 2   | API and Networking Setup          | View Model            | Static UI_Home Screen               | SearchScreen Dynamic UI            | Detail screen Dynamic UI          |
+| Week 3   | Implement Navigation      |  link sreach screen and detail screen  |  Dynamic UI_Home Screen              | link Home screen and detail screen | Add watch trailer button |
+| Week 4   | unit test         | home screen edit    | update home screen     | SearchScreen edit                         | Edit like button|
+
+### 🎨 Figma Design
+You can view the app design here:  
+https://www.figma.com/community/file/1554038440572666820

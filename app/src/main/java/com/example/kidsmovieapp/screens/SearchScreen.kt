@@ -1,5 +1,6 @@
 package com.example.kidsmovieapp.screens
 
+import android.R.attr.title
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -33,6 +34,7 @@ import com.example.kidsmovieapp.R
 import com.example.kidsmovieapp.ui.viewmodel.MovieViewModel
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.kidsmovieapp.data.remote.dto.MovieDto
+import kotlin.concurrent.timerTask
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -79,59 +81,60 @@ fun SearchScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .shadow(8.dp)
                     .background(
-                        brush = Brush.verticalGradient(
+                        Brush.verticalGradient(
                             colors = listOf(Color.White, Color(0xFFF8EAFE))
                         )
                     )
-                    .padding(vertical = 16.dp, horizontal = 12.dp)
             ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    IconButton(onClick = onClose) {
-                        Box(
-                            modifier = Modifier
-                                .size(40.dp)
-                                .background(
-                                    brush = Brush.linearGradient(
-                                        colors = listOf(
-                                            Color(0xFFE91E63),
-                                            Color(0xFF9C27B0)
-                                        )
-                                    ),
-                                    shape = RoundedCornerShape(45.dp)
-                                ),
-                            contentAlignment = Alignment.Center
+                TopAppBar(
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color.Transparent
+                    ),
+                    title = {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Icon(
-                                imageVector = Icons.Default.Close,
-                                contentDescription = "Close",
-                                tint = Color.White
+                            IconButton(onClick = onClose) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(40.dp)
+                                        .background(
+                                            brush = Brush.linearGradient(
+                                                colors = listOf(
+                                                    Color(0xFFE91E63),
+                                                    Color(0xFF9C27B0)
+                                                )
+                                            ),
+                                            shape = RoundedCornerShape(45.dp)
+                                        ),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Close,
+                                        contentDescription = "Close",
+                                        tint = Color.White
+                                    )
+                                }
+                            }
+                            IconButton(onClick = {}, enabled = false) {
+                                Icon(
+                                    Icons.Default.Search,
+                                    contentDescription = "Search",
+                                    tint = Color(0xFF00B7D9)
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Text(
+                                "Search Movies ✨",
+                                fontSize = 25.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFF6D11AF)
                             )
                         }
-                    }
-                    IconButton(onClick = {},
-                        enabled = false
-                    ) {
-                        Icon(
-                            Icons.Default.Search,
-                            contentDescription = "Search",
-                            tint = Color(0xFF00B7D9)
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Text(
-                        "Search Movies ✨",
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF6D11AF)
-                    )
-                }
+                    },
+                )
             }
         }
     ) { paddingValues ->
@@ -179,8 +182,11 @@ fun SearchScreen(
                     unfocusedIndicatorColor = Color(0xFFC079FD),
                     cursorColor = Color(0xFFC079FD),
                     unfocusedContainerColor = Color.White,
-                    focusedContainerColor = Color.White
-                ),
+                    focusedContainerColor = Color.White,
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black
+
+                    ),
                 trailingIcon = {
                     Box(
                         modifier = Modifier
