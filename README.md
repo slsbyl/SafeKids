@@ -110,4 +110,4 @@ Team Task Distribution
 | Week 1   | Initialize Project and version control| Splash screen UI      | UI - UX Design           | SearchScreen Static UI             | Detail screen Static UI       |
 | Week 2   | API and Networking Setup          | View Model            | Static UI_Home Screen               | SearchScreen Dynamic UI            | Detail screen Dynamic UI          |
 | Week 3   | Implement Navigation      |  link sreach screen and detail screen  |  Dynamic UI_Home Screen              | link Home screen and detail screen | Add watch trailer button |
-| Week 4   | unit test         | home screen edit    | Integration      | SearchScreen edit                         | Edit like button|
+| Week 4   | unit test         | home screen edit    | update home screen     | SearchScreen edit                         | Edit like button|
