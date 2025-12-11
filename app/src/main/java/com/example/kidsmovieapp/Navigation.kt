@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.kidsmovieapp.data.remote.dto.MovieDto
 import com.example.kidsmovieapp.screens.DetailScreen
+import com.example.kidsmovieapp.screens.FavoritesScreen
 import com.example.kidsmovieapp.screens.SafeKidsHomeScreen
 import com.example.kidsmovieapp.screens.SearchScreen
 import com.example.kidsmovieapp.screens.SplashScreen
@@ -38,6 +39,9 @@ fun NavigationGraph(navController: NavHostController) {
                 },
                 onSearchClick ={
                     navController.navigate("search")
+                },
+                onFavoritesClick = {
+                    navController.navigate("favorites")
                 }
             )
         }
@@ -50,6 +54,7 @@ fun NavigationGraph(navController: NavHostController) {
                     navController.navigate("detail/${movie.id}")
                 }
             )
+
         }
 
         composable("detail/{movieId}") { backStackEntry ->
@@ -62,6 +67,18 @@ fun NavigationGraph(navController: NavHostController) {
                 )
             }
         }
+        //composable("favorites") {
+         //   val viewModel: MovieViewModel = viewModel()
+//val favorites by viewModel.favorites.collectAsState()
+
+           // FavoritesScreen(
+             //   favorites = favorites,
+             //   onMovieClick = { movie ->
+                   // navController.navigate("detail/${movie.id}")
+             //   },
+              //  onBackClicked = { navController.popBackStack() } )
+        //}
+
     }
 }
 

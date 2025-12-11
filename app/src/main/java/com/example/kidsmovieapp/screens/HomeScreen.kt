@@ -140,35 +140,33 @@ private data class FloatingParticle(
     val size: Float,
     val speedY: Float,
     val speedX: Float,
-    var rotation: Float,   // زاويه دوران الشكل حاليا
-    val rotationSpeed: Float,  // كل ثانيه الشكل يدور بزاويه قد ايه
+    var rotation: Float,
+    val rotationSpeed: Float,
     val shape: FloatingShape,
     val color: Color,
-    val baseAlpha: Float // شفافيه
+    val baseAlpha: Float
 )
 
 @Composable
-private fun AnimatedPlayfulBackground(
+fun AnimatedPlayfulBackground(
     modifier: Modifier = Modifier.Companion,
     particleCount: Int = 18
 ) {
-    val random = remember { Random(System.currentTimeMillis()) } //ارقام راندوم للون و الحجم و السرعه
-    val particles = remember { mutableStateListOf<FloatingParticle>() } //ليست بكل الاشكال اللى هتترسم عالشاشه
-//FloatingParticle كلاس بيخزن كل بيانات الشكل مكانه لونه حجمه سرعته اتجاهه نوعه
+    val random = remember { Random(System.currentTimeMillis()) }
+    val particles = remember { mutableStateListOf<FloatingParticle>() }
 
-    val infiniteTransition = rememberInfiniteTransition(label = "bg_animation")  // هنا بنقول للـ Compose نعمل Animation لقيمة عدد عشري float
-    // label = "bg_animation"  ده ليبل بيسهل التعرف على الانيميشن لما اعمل ديبجنح
+    val infiniteTransition = rememberInfiniteTransition(label = "bg_animation")
     val animationPhase by infiniteTransition.animateFloat(
         initialValue = 0f,
         targetValue = 1f,
         animationSpec = infiniteRepeatable(
-            animation = tween(3000, easing = LinearEasing),  // الحركه هتستمر 3 ثوانى من 0 ل 1 و lineareasimg يعنى الحركه ثابته مش هتسرع ولا هتبطأ
-            repeatMode = RepeatMode.Restart  // لما توصل القيمه 1 ترجه 0 و لوب على كده
+            animation = tween(3000, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
         ),
         label = "phase"
     )
-   // فى كومبوز اى مكون هيتحدث او يتعمله ريكومبوز كل مره هيحصل تغيير ف كل مره الكود هيعمل تدرج ف الالوان و ده هيبطأ الابليكيشن فالريميمبر بتخلى القيمه محفوظه ف الميمورى ف مش هرسم من جديد هستخدم القيمه اللى اتعملت قبل كده
-    val gradientBrush = remember {   // هنا بنعمل تدرج لوني عمودى من فوق وردى و اى نقطه تحت بيبي بلو
+
+    val gradientBrush = remember {
         Brush.Companion.verticalGradient(
             colors = listOf(
                 SafeKidsColors.BgPinkLight,
@@ -179,9 +177,9 @@ private fun AnimatedPlayfulBackground(
     }
 
     Canvas(modifier = modifier.background(gradientBrush)) {
-        if (particles.isEmpty()) {    // لو لسه الليست فاضيه يعنى اول مره نرسم هنعمل بارتكلز جديده
-            val shapes = FloatingShape.values() // ديه هترجع ليست بالاشكال عشان نختار منها بكل راندوم
-            val colors = listOf(        // كل بارتكل هيبقى عندى لون راندوم من دول
+        if (particles.isEmpty()) {
+            val shapes = FloatingShape.values()
+            val colors = listOf(
                 SafeKidsColors.CandyPink,
                 SafeKidsColors.CandyTurquoise,
                 SafeKidsColors.CandyLime,
@@ -209,12 +207,12 @@ private fun AnimatedPlayfulBackground(
                 )
             }
         }
-        // بحدث الموقع و الدوران
+
         particles.forEach { particle ->
             particle.y -= particle.speedY
             particle.x += particle.speedX
             particle.rotation += particle.rotationSpeed
-            // لو البارتكل خرج بره الشاشه يرجعه
+
             if (particle.y < -particle.size) {
                 particle.y = size.height + particle.size
                 particle.x = random.nextFloat() * size.width
@@ -224,11 +222,11 @@ private fun AnimatedPlayfulBackground(
 
             val twinkle =
                 0.5f + 0.5f * sin((animationPhase * 2 * Math.PI + particle.x / 100).toFloat())
-//
+
             val alpha = (particle.baseAlpha * twinkle).coerceIn(0.1f, 0.35f)
-//
+
             val color = particle.color.copy(alpha = alpha)
-//
+
 
             when (particle.shape) {
                 FloatingShape.STAR -> drawStar(
@@ -352,13 +350,13 @@ fun SafeKidsLogo(
     size: Dp = 50.dp,
     modifier: Modifier = Modifier.Companion
 ) {
-    Row( // بيحط كل العناصر جوه صف أفقي
+    Row(
         modifier = modifier,
         verticalAlignment = Alignment.Companion.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
 
-        Box(  // بتمثل الدايره الكبيره ف اللوجو
+        Box(
             modifier = Modifier.Companion
                 .size(size)
                 .clip(CircleShape)
@@ -374,7 +372,7 @@ fun SafeKidsLogo(
             contentAlignment = Alignment.Companion.Center
         ) {
 
-            Box(   // طبقه شفافه جوه الدايره الكبيره بتدي لمعان
+            Box(
                 modifier = Modifier.Companion
                     .fillMaxSize()
                     .clip(CircleShape)
@@ -389,7 +387,7 @@ fun SafeKidsLogo(
             )
 
 
-            Icon( // ده الدرع ف وسط الدايره
+            Icon(
                 imageVector = Icons.Default.Shield,
                 contentDescription = "Safe Kids Shield",
                 modifier = Modifier.Companion.size(size * 0.5f),
@@ -407,7 +405,7 @@ fun SafeKidsLogo(
             )
         }
 
-        Column(   // ده التكست جوه الدايره
+        Column(
             verticalArrangement = Arrangement.spacedBy(0.dp)
         ) {
             Text(
@@ -438,13 +436,12 @@ fun SafeKidsLogo(
 }
 
 
-@Composable   // معناه ان الفانكشن ديه هترسم حاجه عالشاشه
+@Composable
 private fun SearchButton(
-    onClick: () -> Unit = {},  //اى كود هيتنفذ لما اليوزر يضغط
-    modifier: Modifier = Modifier.Companion //ده بيسمحلى اتحكم ف شكل الزر و حجمه و مكانه لما استخدمه ف مكان تانى
+    onClick: () -> Unit = {},
+    modifier: Modifier = Modifier.Companion
 ) {
-    var isPressed by remember { mutableStateOf(false) } //isPressed بيحدد اذا كان الزر مضغوط او لا
-    //بيخلى القيمه محفوظه لما اجى ارسم الواجهه
+    var isPressed by remember { mutableStateOf(false) }
     val scale by animateFloatAsState(
         targetValue = if (isPressed) 0.9f else 1f,
         animationSpec = spring(
@@ -453,12 +450,11 @@ private fun SearchButton(
         ),
         label = "search_button_scale"
     )
-      // لما اليوزر يضغط على الزر سكيل هتصغر البوتون كحركه ضغط سبرينج نوع الحركه لما اسيب البوتون ترجع ل 1
 
-    Box(  // الزرار اللى بره
+    Box(
         modifier = modifier
             .size(48.dp)
-            .scale(scale) // تكبير/تصغير حسب حالة الضغط
+            .scale(scale)
             .clip(CircleShape)
             .background(
                 brush = Brush.Companion.radialGradient(
@@ -508,7 +504,8 @@ private fun SearchButton(
 fun SafeKidsHomeScreen(
     viewModel: MovieViewModel = viewModel(),
     onMovieClick: (MovieDto) -> Unit,
-    onSearchClick: () -> Unit
+    onSearchClick: () -> Unit,
+    onFavoritesClick: () -> Unit
 ) {
     val kidsMovies by viewModel.kidsMovies.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
@@ -525,6 +522,14 @@ fun SafeKidsHomeScreen(
                 ),
                 title = { SafeKidsLogo(size = 48.dp) },
                 actions = {
+                    IconButton(onClick = { onFavoritesClick() }) {
+                        Icon(
+                            imageVector = Icons.Default.Favorite,
+                            contentDescription = "Favorites",
+                            tint = SafeKidsColors.CandyPink
+                        )
+                    }
+
                     Box(modifier = Modifier.padding(end = 12.dp)) {
                         SearchButton(onClick = onSearchClick)
                     }
@@ -653,7 +658,7 @@ private data class MovieData(
 @Preview(showBackground = true)
 @Composable
 private fun PreviewSafeKidsHomeScreen() {
-    SafeKidsHomeScreen(onMovieClick = {} , onSearchClick = {})
+    SafeKidsHomeScreen(onMovieClick = {} , onSearchClick = {}, onFavoritesClick={})
 }
 
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)

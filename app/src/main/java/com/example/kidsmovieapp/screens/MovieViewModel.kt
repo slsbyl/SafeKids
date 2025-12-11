@@ -84,4 +84,5 @@ class MovieViewModel(
     fun selectMovie(movie: MovieDto) {
         _selectedMovie.value = movie
     }
+
 }
