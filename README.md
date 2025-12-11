@@ -113,5 +113,6 @@ Team Task Distribution
 | Week 4   | unit test         | home screen edit    | update home screen     | SearchScreen edit                         | Edit like button|
 
 ### 🎨 Figma Design
-You can view the app design here:  
-https://www.figma.com/community/file/1554038440572666820
+You can view the app design here:
+https://www.figma.com/community/file/1554038440572666820/safe-kids-app-design
+
