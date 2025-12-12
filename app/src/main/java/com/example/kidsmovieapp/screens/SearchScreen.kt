@@ -21,6 +21,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
@@ -30,6 +31,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.kidsmovieapp.R
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.LayoutDirection
 import com.example.kidsmovieapp.data.remote.dto.MovieDto
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -39,250 +41,255 @@ fun SearchScreen(
     onClose: () -> Unit = {},
     onMovieClick: (MovieDto) -> Unit = {}
 ) {
-    var query by remember { mutableStateOf(TextFieldValue("")) }
+    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+        var query by remember { mutableStateOf(TextFieldValue("")) }
 
-    // loading movies
-    LaunchedEffect(Unit) {
-        viewModel.loadKidsMovies()
-    }
-    val kidsMovies by viewModel.kidsMovies.collectAsState()
-    val filteredResults = kidsMovies.filter { movie ->
-        query.text.isEmpty() || movie.title?.contains(query.text, ignoreCase = true) == true
-    }
+        // loading movies
+        LaunchedEffect(Unit) {
+            viewModel.loadKidsMovies()
+        }
+        val kidsMovies by viewModel.kidsMovies.collectAsState()
+        val filteredResults = kidsMovies.filter { movie ->
+            query.text.isEmpty() || movie.title?.contains(query.text, ignoreCase = true) == true
+        }
 
-    // Animation
-    val infiniteTransition = rememberInfiniteTransition(label = "starAnim")
+        // Animation
+        val infiniteTransition = rememberInfiniteTransition(label = "starAnim")
 
-    val rotation by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 360f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(4000, easing = LinearEasing),
-            repeatMode = RepeatMode.Restart
-        ),
-        label = "rotationAnim"
-    )
-    val glowAlpha by infiniteTransition.animateFloat(
-        initialValue = 0.3f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(1500, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "glowAnim"
-    )
-    // Top Bar
-    Scaffold(
-        topBar = {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(
-                        Brush.verticalGradient(
-                            colors = listOf(Color.White, Color(0xFFF8EAFE))
+        val rotation by infiniteTransition.animateFloat(
+            initialValue = 0f,
+            targetValue = 360f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(4000, easing = LinearEasing),
+                repeatMode = RepeatMode.Restart
+            ),
+            label = "rotationAnim"
+        )
+        val glowAlpha by infiniteTransition.animateFloat(
+            initialValue = 0.3f,
+            targetValue = 1f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(1500, easing = LinearEasing),
+                repeatMode = RepeatMode.Reverse
+            ),
+            label = "glowAnim"
+        )
+        // Top Bar
+        Scaffold(
+            topBar = {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            Brush.verticalGradient(
+                                colors = listOf(Color.White, Color(0xFFF8EAFE))
+                            )
                         )
-                    )
-            ) {
-                TopAppBar(
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = Color.Transparent
-                    ),
-                    title = {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            IconButton(onClick = onClose) {
-                                Box(
-                                    modifier = Modifier
-                                        .size(40.dp)
-                                        .background(
-                                            brush = Brush.linearGradient(
-                                                colors = listOf(
-                                                    Color(0xFFE91E63),
-                                                    Color(0xFF9C27B0)
-                                                )
+                ) {
+                    TopAppBar(
+                        colors = TopAppBarDefaults.topAppBarColors(
+                            containerColor = Color.Transparent
+                        ),
+                        title = {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                IconButton(onClick = onClose) {
+                                    Box(
+                                        modifier = Modifier
+                                            .size(40.dp)
+                                            .background(
+                                                brush = Brush.linearGradient(
+                                                    colors = listOf(
+                                                        Color(0xFFE91E63),
+                                                        Color(0xFF9C27B0)
+                                                    )
+                                                ),
+                                                shape = RoundedCornerShape(45.dp)
                                             ),
-                                            shape = RoundedCornerShape(45.dp)
-                                        ),
-                                    contentAlignment = Alignment.Center
-                                ) {
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Close,
+                                            contentDescription = "Close",
+                                            tint = Color.White
+                                        )
+                                    }
+                                }
+                                IconButton(onClick = {}, enabled = false) {
                                     Icon(
-                                        imageVector = Icons.Default.Close,
-                                        contentDescription = "Close",
-                                        tint = Color.White
+                                        Icons.Default.Search,
+                                        contentDescription = "Search",
+                                        tint = Color(0xFF00B7D9)
                                     )
                                 }
-                            }
-                            IconButton(onClick = {}, enabled = false) {
-                                Icon(
-                                    Icons.Default.Search,
-                                    contentDescription = "Search",
-                                    tint = Color(0xFF00B7D9)
+
+                                Spacer(modifier = Modifier.width(12.dp))
+                                Text(
+                                    "Search Movies ✨",
+                                    fontSize = 25.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFF6D11AF)
                                 )
                             }
-
-                            Spacer(modifier = Modifier.width(12.dp))
+                        },
+                    )
+                }
+            }
+        ) { paddingValues ->
+            val focusManager = LocalFocusManager.current
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(Color(0xFFFFC1E3), Color(0xFFB3E5FC))
+                        )
+                    )
+                    .padding(paddingValues)
+                    .padding(16.dp)
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() }
+                    ) {
+                        focusManager.clearFocus()
+                    }
+            ) {
+                // Search Box
+                var isFocused by remember { mutableStateOf(false) }
+                OutlinedTextField(
+                    value = query,
+                    onValueChange = { query = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .shadow(12.dp, shape = RoundedCornerShape(50.dp))
+                        .onFocusChanged { focusState ->
+                            isFocused = focusState.isFocused
+                        },
+                    placeholder = {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
-                                "Search Movies ✨",
-                                fontSize = 25.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color(0xFF6D11AF)
+                                "Search for amazing kids movies!", color = Color(0xFFC079FD)
                             )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text("🎬", fontSize = 16.sp)
                         }
                     },
-                )
-            }
-        }
-    ) { paddingValues ->
-        val focusManager = LocalFocusManager.current
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(Color(0xFFFFC1E3), Color(0xFFB3E5FC))
-                    )
-                )
-                .padding(paddingValues)
-                .padding(16.dp)
-                .clickable(
-                    indication = null,
-                    interactionSource = remember { MutableInteractionSource() }
-                ) {
-                    focusManager.clearFocus()
-                }
-        ) {
-            // Search Box
-            var isFocused by remember { mutableStateOf(false) }
-            OutlinedTextField(
-                value = query,
-                onValueChange = { query = it },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .shadow(12.dp, shape = RoundedCornerShape(50.dp))
-                    .onFocusChanged { focusState ->
-                        isFocused = focusState.isFocused
-                    },
-                placeholder = {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            "Search for amazing kids movies!", color = Color(0xFFC079FD)
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text("🎬", fontSize = 16.sp)
-                    }
-                },
-                shape = RoundedCornerShape(50.dp),
-                colors = TextFieldDefaults.colors(
-                    focusedIndicatorColor =  if (isFocused) Color(0xFFFF69B4) else Color(0xFFC079FD),
-                    unfocusedIndicatorColor = Color(0xFFC079FD),
-                    cursorColor = Color(0xFFC079FD),
-                    unfocusedContainerColor = Color.White,
-                    focusedContainerColor = Color.White,
-                    focusedTextColor = Color.Black,
-                    unfocusedTextColor = Color.Black
+                    shape = RoundedCornerShape(50.dp),
+                    colors = TextFieldDefaults.colors(
+                        focusedIndicatorColor = if (isFocused) Color(0xFFFF69B4) else Color(
+                            0xFFC079FD
+                        ),
+                        unfocusedIndicatorColor = Color(0xFFC079FD),
+                        cursorColor = Color(0xFFC079FD),
+                        unfocusedContainerColor = Color.White,
+                        focusedContainerColor = Color.White,
+                        focusedTextColor = Color.Black,
+                        unfocusedTextColor = Color.Black
 
                     ),
-                trailingIcon = {
-                    Box(
-                        modifier = Modifier
-                            .size(32.dp)
-                            .graphicsLayer {
-                                rotationZ = rotation
-                                alpha = if (isFocused) glowAlpha else 0.3f
-                                spotShadowColor = Color.Gray
-                            },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text("✨", fontSize = 20.sp, color = Color(0xFFE91E63))
-                    }
-                }
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            //Result
-            if (query.text.isEmpty()) {
-                CenteredDefaultContent()
-
-            } else if (filteredResults.isEmpty()) {
-                val infiniteTransitionSearch = rememberInfiniteTransition(label = "searchIconAnim")
-                val rotationSearch by infiniteTransitionSearch.animateFloat(
-                    initialValue = -10f,
-                    targetValue = 10f,
-                    animationSpec = infiniteRepeatable(
-                        animation = tween(1000, easing = LinearEasing),
-                        repeatMode = RepeatMode.Reverse
-                    ),
-                    label = "rotationSearchAnim"
-                )
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(top = 16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Top
-                ) {
-                    Text(
-                        "No movies found! 😔",
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF6D11AF)
-                    )
-                    Spacer(modifier = Modifier.height(50.dp))
-
-                    Box(
-                        modifier = Modifier
-                            .size(80.dp)
-                            .shadow(10.dp, shape = RoundedCornerShape(50.dp))
-                            .background(
-                                brush = Brush.linearGradient(
-                                    colors = listOf(Color(0xFFB3E5FC), Color(0xFFE1BEE7))
-                                ),
-                                shape = RoundedCornerShape(50.dp)
-                            )
-                            .graphicsLayer { rotationZ = rotationSearch },
-                        contentAlignment = Alignment.Center,
-
+                    trailingIcon = {
+                        Box(
+                            modifier = Modifier
+                                .size(32.dp)
+                                .graphicsLayer {
+                                    rotationZ = rotation
+                                    alpha = if (isFocused) glowAlpha else 0.3f
+                                    spotShadowColor = Color.Gray
+                                },
+                            contentAlignment = Alignment.Center
                         ) {
-                        Text("🔍", fontSize = 30.sp)
+                            Text("✨", fontSize = 20.sp, color = Color(0xFFE91E63))
+                        }
                     }
-                    Spacer(modifier = Modifier.height(8.dp))
+                )
 
-                    Text(
-                        "No movies found! 🔍",
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF6D11AF)
+                Spacer(modifier = Modifier.height(24.dp))
+
+                //Result
+                if (query.text.isEmpty()) {
+                    CenteredDefaultContent()
+
+                } else if (filteredResults.isEmpty()) {
+                    val infiniteTransitionSearch =
+                        rememberInfiniteTransition(label = "searchIconAnim")
+                    val rotationSearch by infiniteTransitionSearch.animateFloat(
+                        initialValue = -10f,
+                        targetValue = 10f,
+                        animationSpec = infiniteRepeatable(
+                            animation = tween(1000, easing = LinearEasing),
+                            repeatMode = RepeatMode.Reverse
+                        ),
+                        label = "rotationSearchAnim"
                     )
 
-                    Text(
-                        "Try searching for something else, explore! ✨",
-                        fontSize = 16.sp,
-                        color = Color(0xFF9710F8)
-                    )
-                }
-
-            } else {
-                Column {
-                    Text(
-                        "Found ${filteredResults.size} amazing movies! 🎉",
-                        fontSize = 20.sp,
-                        color = Color(0xFF6D11AF)
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    LazyColumn(
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(top = 16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Top
                     ) {
-                        items(filteredResults) { movie ->
-                            MovieItem(
-                                title = movie.title ?:"No title",
-                                posterPath = movie.poster_path,
-                                rating = (movie.vote_average ?: 0.0).toFloat(),
-                                onClick = { onMovieClick(movie) }
-                            )
+                        Text(
+                            "No movies found! 😔",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF6D11AF)
+                        )
+                        Spacer(modifier = Modifier.height(50.dp))
+
+                        Box(
+                            modifier = Modifier
+                                .size(80.dp)
+                                .shadow(10.dp, shape = RoundedCornerShape(50.dp))
+                                .background(
+                                    brush = Brush.linearGradient(
+                                        colors = listOf(Color(0xFFB3E5FC), Color(0xFFE1BEE7))
+                                    ),
+                                    shape = RoundedCornerShape(50.dp)
+                                )
+                                .graphicsLayer { rotationZ = rotationSearch },
+                            contentAlignment = Alignment.Center,
+
+                            ) {
+                            Text("🔍", fontSize = 30.sp)
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Text(
+                            "No movies found! 🔍",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF6D11AF)
+                        )
+
+                        Text(
+                            "Try searching for something else, explore! ✨",
+                            fontSize = 16.sp,
+                            color = Color(0xFF9710F8)
+                        )
+                    }
+
+                } else {
+                    Column {
+                        Text(
+                            "Found ${filteredResults.size} amazing movies! 🎉",
+                            fontSize = 20.sp,
+                            color = Color(0xFF6D11AF)
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        LazyColumn(
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            items(filteredResults) { movie ->
+                                MovieItem(
+                                    title = movie.title ?: "No title",
+                                    posterPath = movie.poster_path,
+                                    rating = (movie.vote_average ?: 0.0).toFloat(),
+                                    onClick = { onMovieClick(movie) }
+                                )
+                            }
                         }
                     }
                 }
@@ -342,7 +349,7 @@ fun CenteredDefaultContent(){
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             "Start your movie adventure!🌟",
-            fontSize = 25.sp,
+            fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
             color = Color(0xFF6D11AF)
         )

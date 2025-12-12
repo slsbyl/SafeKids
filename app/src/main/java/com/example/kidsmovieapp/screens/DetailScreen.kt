@@ -48,6 +48,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -77,6 +78,8 @@ import com.example.kidsmovieapp.ui.theme.TealAccent
 import com.example.kidsmovieapp.ui.theme.buttonGradient
 import com.example.kidsmovieapp.AnimatedBackground
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
 
 
 val genreMap = mapOf(
@@ -151,282 +154,284 @@ fun MovieDetailScreen(
     onToggleFavorite: () -> Unit,
     onBackClicked: () -> Unit
 ) {
-    val context = LocalContext.current
+    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+        val context = LocalContext.current
 
-    val scrollState = rememberScrollState()
+        val scrollState = rememberScrollState()
 
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        AnimatedBackground(modifier = Modifier.fillMaxSize())
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
+        Box(
+            modifier = Modifier.fillMaxSize()
         ) {
-            //App bar
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color.White)
-                    .padding(top = 26.dp, start = 20.dp, end = 20.dp, bottom = 8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                IconButton(
-                    onClick = onBackClicked,
-                    modifier = Modifier.size(40.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Back",
-                        tint = Color.White,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(
-                                brush = Brush.horizontalGradient(
-                                    listOf(
-                                        BlueGradient,
-                                        PinkGradient
-                                    )
-                                ),
-                                shape = CircleShape
-                            )
-                            .padding(8.dp)
-                    )
-                }
+            AnimatedBackground(modifier = Modifier.fillMaxSize())
 
-                Text(
-                    text = "Movie Details ✨",
-                    fontWeight = FontWeight.Bold,
-                    color = DarkPurpleText,
-                    modifier = Modifier.weight(1f),
-                    textAlign = TextAlign.Center,
-                    fontSize = 25.sp
-                )
-
-                Spacer(modifier = Modifier.size(40.dp))
-            }
-
-            // Scrollable below app bar
             Column(
                 modifier = Modifier
-                    .verticalScroll(scrollState)
                     .fillMaxSize()
-                    .padding(horizontal = 20.dp)
             ) {
-                Spacer(modifier = Modifier.height(20.dp))
-
-                // Movie poster and info
+                //App bar
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.Top
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.White)
+                        .padding(top = 26.dp, start = 20.dp, end = 20.dp, bottom = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    AsyncImage(
-                        model = "https://image.tmdb.org/t/p/w500${movie.poster_path}",
-                        contentDescription = movie.title,
-                        modifier = Modifier
-                            .width(130.dp)
-                            .height(190.dp)
-                            .clip(RoundedCornerShape(16.dp)),
-                        contentScale = ContentScale.Crop
+                    IconButton(
+                        onClick = onBackClicked,
+                        modifier = Modifier.size(40.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back",
+                            tint = Color.White,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(
+                                    brush = Brush.horizontalGradient(
+                                        listOf(
+                                            BlueGradient,
+                                            PinkGradient
+                                        )
+                                    ),
+                                    shape = CircleShape
+                                )
+                                .padding(8.dp)
+                        )
+                    }
+
+                    Text(
+                        text = "Movie Details ✨",
+                        fontWeight = FontWeight.Bold,
+                        color = DarkPurpleText,
+                        modifier = Modifier.weight(1f),
+                        textAlign = TextAlign.Center,
+                        fontSize = 25.sp
                     )
 
-                    Spacer(modifier = Modifier.width(16.dp))
+                    Spacer(modifier = Modifier.size(40.dp))
+                }
 
-                    Column {
-                        Text(
-                            text = movie.title ?: "Untitled",
-                            color = DarkPurpleText,
-                            fontSize = 28.sp,
-                            fontWeight = FontWeight.Bold,
-                            lineHeight = 30.sp
+                // Scrollable below app bar
+                Column(
+                    modifier = Modifier
+                        .verticalScroll(scrollState)
+                        .fillMaxSize()
+                        .padding(horizontal = 20.dp)
+                ) {
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    // Movie poster and info
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.Top
+                    ) {
+                        AsyncImage(
+                            model = "https://image.tmdb.org/t/p/w500${movie.poster_path}",
+                            contentDescription = movie.title,
+                            modifier = Modifier
+                                .width(130.dp)
+                                .height(190.dp)
+                                .clip(RoundedCornerShape(16.dp)),
+                            contentScale = ContentScale.Crop
                         )
 
-                        Spacer(modifier = Modifier.height(12.dp))
+                        Spacer(modifier = Modifier.width(16.dp))
 
-                        //Show Genres
-                        val genreNames = movie.genres?.map { it.name }
-                            ?: movie.genre_ids?.map { genreMap[it] ?: "Unknown" }
-                            ?: emptyList()
-
-                        FlowRow(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            verticalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            genreNames.forEach { genreName ->
-                                InfoTag(
-                                    text = genreName,
-                                    backgroundColor = TealAccent
-                                )
-                            }
-                        }
-
-
-                        Spacer(modifier = Modifier.height(12.dp))
-
-                        //Show rating and year
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            IconInfoTag(
-                                text = String.format("%.1f", movie.vote_average ?: 0.0),
-                                backgroundColor = Gold,
-                                icon = Icons.Default.Star,
-                                isCircle = true
+                        Column {
+                            Text(
+                                text = movie.title ?: "Untitled",
+                                color = DarkPurpleText,
+                                fontSize = 28.sp,
+                                fontWeight = FontWeight.Bold,
+                                lineHeight = 30.sp
                             )
 
-                            Spacer(modifier = Modifier.width(8.dp))
+                            Spacer(modifier = Modifier.height(12.dp))
 
-                            movie.release_date?.let {
+                            //Show Genres
+                            val genreNames = movie.genres?.map { it.name }
+                                ?: movie.genre_ids?.map { genreMap[it] ?: "Unknown" }
+                                ?: emptyList()
+
+                            FlowRow(
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                genreNames.forEach { genreName ->
+                                    InfoTag(
+                                        text = genreName,
+                                        backgroundColor = TealAccent
+                                    )
+                                }
+                            }
+
+
+                            Spacer(modifier = Modifier.height(12.dp))
+
+                            //Show rating and year
+                            Row(verticalAlignment = Alignment.CenterVertically) {
                                 IconInfoTag(
-                                    text = it.take(4),
-                                    backgroundColor = PurpleAccent,
-                                    icon = Icons.Default.DateRange,
+                                    text = String.format("%.1f", movie.vote_average ?: 0.0),
+                                    backgroundColor = Gold,
+                                    icon = Icons.Default.Star,
                                     isCircle = true
                                 )
+
+                                Spacer(modifier = Modifier.width(8.dp))
+
+                                movie.release_date?.let {
+                                    IconInfoTag(
+                                        text = it.take(4),
+                                        backgroundColor = PurpleAccent,
+                                        icon = Icons.Default.DateRange,
+                                        isCircle = true
+                                    )
+                                }
                             }
                         }
                     }
-                }
 
-                Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(24.dp))
 
-                // About section
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        Icons.Default.Info,
-                        contentDescription = "About",
-                        tint = PinkAccent
+                    // About section
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            Icons.Default.Info,
+                            contentDescription = "About",
+                            tint = PinkAccent
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = "About this amazing movie!",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp,
+                            color = DarkPurpleText
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Card(
+                        shape = RoundedCornerShape(20.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = movie.overview ?: "No overview available.",
+                            modifier = Modifier.padding(18.dp),
+                            lineHeight = 22.sp,
+                            color = BrightPurpleText
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    // Buttons
+                    //Rotate play icon
+                    val rotate = rememberInfiniteTransition(label = "rotate_play_icon")
+                    val rotation by rotate.animateFloat(
+                        initialValue = 0f,
+                        targetValue = 360f,
+                        animationSpec = infiniteRepeatable(
+                            animation = tween(durationMillis = 3000, easing = LinearEasing),
+                            repeatMode = RepeatMode.Restart
+                        ),
+                        label = "icon_rotation"
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = "About this amazing movie!",
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp,
-                        color = DarkPurpleText
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    movie.trailerUrl?.let { trailerUrl ->
+                        Button(
+                            onClick = {
+                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(trailerUrl))
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                context.startActivity(intent)
+                            },
+                            shape = RoundedCornerShape(50),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(56.dp),
+                            contentPadding = PaddingValues(),
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .background(buttonGradient),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(
+                                        Icons.Default.PlayArrow,
+                                        contentDescription = null,
+                                        tint = Color.White,
+                                        modifier = Modifier
+                                            .graphicsLayer {
+                                                rotationZ = rotation
+                                            }
+                                            .size(24.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text(
+                                        "Watch Trailer 📽️",
+                                        color = Color.White,
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 20.sp
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    //Beats heart icon
+                    val heartTransition = rememberInfiniteTransition(label = "heartBeat")
+                    val scale by heartTransition.animateFloat(
+                        initialValue = 1f,
+                        targetValue = 1.4f,
+                        animationSpec = infiniteRepeatable(
+                            animation = tween(400, easing = LinearOutSlowInEasing),
+                            repeatMode = RepeatMode.Reverse
+                        ),
+                        label = "scaleAnim"
                     )
-                }
 
-                Spacer(modifier = Modifier.height(12.dp))
-
-                Card(
-                    shape = RoundedCornerShape(20.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color.White),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(
-                        text = movie.overview ?: "No overview available.",
-                        modifier = Modifier.padding(18.dp),
-                        lineHeight = 22.sp,
-                        color = BrightPurpleText
-                    )
-                }
-
-                Spacer(modifier = Modifier.weight(1f))
-
-                // Buttons
-                //Rotate play icon
-                val rotate = rememberInfiniteTransition(label = "rotate_play_icon")
-                val rotation by rotate.animateFloat(
-                    initialValue = 0f,
-                    targetValue = 360f,
-                    animationSpec = infiniteRepeatable(
-                        animation = tween(durationMillis = 3000, easing = LinearEasing),
-                        repeatMode = RepeatMode.Restart
-                    ),
-                    label = "icon_rotation"
-                )
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                movie.trailerUrl?.let { trailerUrl ->
                     Button(
-                        onClick = {
-                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(trailerUrl))
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                            context.startActivity(intent)
-                        },
+                        onClick = onToggleFavorite,
                         shape = RoundedCornerShape(50),
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(56.dp),
-                        contentPadding = PaddingValues(),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.White),
+                        border = BorderStroke(2.dp, PinkAccent),
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(buttonGradient),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(
-                                    Icons.Default.PlayArrow,
-                                    contentDescription = null,
-                                    tint = Color.White,
-                                    modifier = Modifier
-                                        .graphicsLayer {
-                                            rotationZ = rotation
-                                        }
-                                        .size(24.dp)
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text(
-                                    "Watch Trailer 📽️",
-                                    color = Color.White,
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 20.sp
-                                )
-                            }
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+
+                                imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                                contentDescription = null,
+                                tint = PinkAccent,
+                                modifier = Modifier
+                                    .graphicsLayer(
+                                        scaleX = scale,
+                                        scaleY = scale
+                                    )
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+
+                                text = if (isFavorite) "Added To Favorites💖" else "Add To Favorites❤️",
+                                color = PinkAccent,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 20.sp
+                            )
                         }
                     }
+
+                    Spacer(modifier = Modifier.height(80.dp))
                 }
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                //Beats heart icon
-                val heartTransition = rememberInfiniteTransition(label = "heartBeat")
-                val scale by heartTransition.animateFloat(
-                    initialValue = 1f,
-                    targetValue = 1.4f,
-                    animationSpec = infiniteRepeatable(
-                        animation = tween(400, easing = LinearOutSlowInEasing),
-                        repeatMode = RepeatMode.Reverse
-                    ),
-                    label = "scaleAnim"
-                )
-
-                Button(
-                    onClick = onToggleFavorite,
-                    shape = RoundedCornerShape(50),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.White),
-                    border = BorderStroke(2.dp, PinkAccent),
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-
-                            imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                            contentDescription = null,
-                            tint = PinkAccent,
-                            modifier = Modifier
-                                .graphicsLayer(
-                                    scaleX = scale,
-                                    scaleY = scale
-                                )
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-
-                            text = if (isFavorite) "Added To Favorites💖" else "Add To Favorites❤️",
-                            color = PinkAccent,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 20.sp
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(80.dp))
             }
         }
     }
@@ -445,7 +450,7 @@ fun InfoTag(text: String, backgroundColor: Color, isCircle: Boolean = false) {
         Text(
             text = text,
             color = Color.White,
-            fontSize = 16.sp,
+            fontSize = 14.sp,
             fontWeight = FontWeight.Bold
         )
     }
