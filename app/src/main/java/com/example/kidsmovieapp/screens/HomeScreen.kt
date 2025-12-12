@@ -1,18 +1,16 @@
 package com.example.kidsmovieapp.screens
+
 import androidx.compose.ui.text.style.TextOverflow
 
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.kidsmovieapp.ui.viewmodel.MovieViewModel
 import coil.compose.AsyncImage
 import androidx.compose.runtime.collectAsState
 import androidx.compose.material3.CircularProgressIndicator
-import com.google.gson.annotations.SerializedName
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.clickable
 import androidx.compose.material3.*
 import androidx.compose.ui.draw.scale
-import coil.compose.AsyncImage
 import kotlinx.coroutines.delay
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -20,22 +18,18 @@ import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -43,20 +37,13 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Movie
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Shield
 import androidx.compose.material.icons.filled.Star
@@ -65,7 +52,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -75,11 +61,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -94,16 +78,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.delay
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.random.Random
-import coil.compose.AsyncImage
 import androidx.compose.ui.layout.ContentScale
 import com.example.kidsmovieapp.data.remote.dto.MovieDto
-
-class HomeScreen {
-}
 
 object SafeKidsColors {
 
@@ -128,8 +107,7 @@ object SafeKidsColors {
 }
 
 
-private fun Random.nextFloatInRange(min: Float, max: Float) =
-    nextFloat() * (max - min) + min
+private fun Random.nextFloatInRange(min: Float, max: Float) = nextFloat() * (max - min) + min
 
 
 private enum class FloatingShape { STAR, HEART, BALLOON, CLOUD }
@@ -149,29 +127,22 @@ private data class FloatingParticle(
 
 @Composable
 fun AnimatedPlayfulBackground(
-    modifier: Modifier = Modifier.Companion,
-    particleCount: Int = 18
+    modifier: Modifier = Modifier.Companion, particleCount: Int = 18
 ) {
     val random = remember { Random(System.currentTimeMillis()) }
     val particles = remember { mutableStateListOf<FloatingParticle>() }
 
     val infiniteTransition = rememberInfiniteTransition(label = "bg_animation")
     val animationPhase by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(3000, easing = LinearEasing),
-            repeatMode = RepeatMode.Restart
-        ),
-        label = "phase"
+        initialValue = 0f, targetValue = 1f, animationSpec = infiniteRepeatable(
+            animation = tween(3000, easing = LinearEasing), repeatMode = RepeatMode.Restart
+        ), label = "phase"
     )
 
     val gradientBrush = remember {
         Brush.Companion.verticalGradient(
             colors = listOf(
-                SafeKidsColors.BgPinkLight,
-                SafeKidsColors.BgPurpleLight,
-                SafeKidsColors.BgCyanLight
+                SafeKidsColors.BgPinkLight, SafeKidsColors.BgPurpleLight, SafeKidsColors.BgCyanLight
             )
         )
     }
@@ -230,30 +201,19 @@ fun AnimatedPlayfulBackground(
 
             when (particle.shape) {
                 FloatingShape.STAR -> drawStar(
-                    Offset(particle.x, particle.y),
-                    particle.size * 0.5f,
-                    color,
-                    particle.rotation
+                    Offset(particle.x, particle.y), particle.size * 0.5f, color, particle.rotation
                 )
 
                 FloatingShape.HEART -> drawHeart(
-                    Offset(particle.x, particle.y),
-                    particle.size * 0.6f,
-                    color,
-                    particle.rotation
+                    Offset(particle.x, particle.y), particle.size * 0.6f, color, particle.rotation
                 )
 
                 FloatingShape.BALLOON -> drawBalloon(
-                    Offset(particle.x, particle.y),
-                    particle.size,
-                    color,
-                    particle.rotation
+                    Offset(particle.x, particle.y), particle.size, color, particle.rotation
                 )
 
                 FloatingShape.CLOUD -> drawCloud(
-                    Offset(particle.x, particle.y),
-                    particle.size,
-                    color
+                    Offset(particle.x, particle.y), particle.size, color
                 )
             }
         }
@@ -261,10 +221,7 @@ fun AnimatedPlayfulBackground(
 }
 
 private fun DrawScope.drawStar(
-    center: Offset,
-    radius: Float,
-    color: Color,
-    rotation: Float
+    center: Offset, radius: Float, color: Color, rotation: Float
 ) {
     val path = Path()
     val spikes = 5
@@ -290,34 +247,35 @@ private fun DrawScope.drawStar(
 }
 
 private fun DrawScope.drawHeart(
-    center: Offset,
-    size: Float,
+    center: Offset, size: Float,
 
-    color: Color,
-    rotation: Float
+    color: Color, rotation: Float
 ) {
     val path = Path()
     rotate(rotation, pivot = center) {
         path.moveTo(center.x, center.y + size * 0.3f)
         path.cubicTo(
-            center.x - size * 0.6f, center.y - size * 0.4f,
-            center.x - size, center.y + size * 0.3f,
-            center.x, center.y + size
+            center.x - size * 0.6f,
+            center.y - size * 0.4f,
+            center.x - size,
+            center.y + size * 0.3f,
+            center.x,
+            center.y + size
         )
         path.cubicTo(
-            center.x + size, center.y + size * 0.3f,
-            center.x + size * 0.6f, center.y - size * 0.4f,
-            center.x, center.y + size * 0.3f
+            center.x + size,
+            center.y + size * 0.3f,
+            center.x + size * 0.6f,
+            center.y - size * 0.4f,
+            center.x,
+            center.y + size * 0.3f
         )
         drawPath(path, color)
     }
 }
 
 private fun DrawScope.drawBalloon(
-    center: Offset,
-    size: Float,
-    color: Color,
-    rotation: Float
+    center: Offset, size: Float, color: Color, rotation: Float
 ) {
     rotate(rotation, pivot = center) {
         drawOval(
@@ -335,9 +293,7 @@ private fun DrawScope.drawBalloon(
 }
 
 private fun DrawScope.drawCloud(
-    center: Offset,
-    size: Float,
-    color: Color
+    center: Offset, size: Float, color: Color
 ) {
     drawCircle(color, radius = size * 0.3f, center = Offset(center.x - size * 0.2f, center.y))
     drawCircle(color, radius = size * 0.4f, center = center)
@@ -347,8 +303,7 @@ private fun DrawScope.drawCloud(
 
 @Composable
 fun SafeKidsLogo(
-    size: Dp = 50.dp,
-    modifier: Modifier = Modifier.Companion
+    size: Dp = 50.dp, modifier: Modifier = Modifier.Companion
 ) {
     Row(
         modifier = modifier,
@@ -368,8 +323,7 @@ fun SafeKidsLogo(
                             SafeKidsColors.CandyPurple
                         )
                     )
-                ),
-            contentAlignment = Alignment.Companion.Center
+                ), contentAlignment = Alignment.Companion.Center
         ) {
 
             Box(
@@ -395,7 +349,7 @@ fun SafeKidsLogo(
             )
 
 
-            Icon( // ده النجمه
+            Icon(
                 imageVector = Icons.Default.Star,
                 contentDescription = null,
                 modifier = Modifier.Companion
@@ -438,17 +392,13 @@ fun SafeKidsLogo(
 
 @Composable
 private fun SearchButton(
-    onClick: () -> Unit = {},
-    modifier: Modifier = Modifier.Companion
+    onClick: () -> Unit = {}, modifier: Modifier = Modifier.Companion
 ) {
     var isPressed by remember { mutableStateOf(false) }
     val scale by animateFloatAsState(
-        targetValue = if (isPressed) 0.9f else 1f,
-        animationSpec = spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy,
-            stiffness = Spring.StiffnessLow
-        ),
-        label = "search_button_scale"
+        targetValue = if (isPressed) 0.9f else 1f, animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow
+        ), label = "search_button_scale"
     )
 
     Box(
@@ -471,16 +421,12 @@ private fun SearchButton(
                 onClick = {
                     isPressed = true
                     onClick()
-                }
-            ),
-        contentAlignment = Alignment.Companion.Center
-    ) {
+                }), contentAlignment = Alignment.Companion.Center) {
         Box(
             modifier = Modifier.Companion
                 .size(36.dp)
                 .clip(CircleShape)
-                .background(Color.Companion.White),
-            contentAlignment = Alignment.Companion.Center // اى حاجه ف البوكس هتكون ف التص
+                .background(Color.Companion.White), contentAlignment = Alignment.Companion.Center
         ) {
             Icon(
                 imageVector = Icons.Default.Search,
@@ -518,34 +464,29 @@ fun SafeKidsHomeScreen(
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = SafeKidsColors.HeaderBackground
-                ),
-                title = { SafeKidsLogo(size = 48.dp) },
-                actions = {
-                    IconButton(onClick = { onFavoritesClick() }) {
-                        Icon(
-                            imageVector = Icons.Default.Favorite,
-                            contentDescription = "Favorites",
-                            tint = SafeKidsColors.CandyPink
-                        )
-                    }
+                containerColor = SafeKidsColors.HeaderBackground
+            ), title = { SafeKidsLogo(size = 48.dp) }, actions = {
+                IconButton(onClick = { onFavoritesClick() }) {
+                    Icon(
+                        imageVector = Icons.Default.Favorite,
+                        contentDescription = "Favorites",
+                        tint = SafeKidsColors.CandyPink
+                    )
+                }
 
-                    Box(modifier = Modifier.padding(end = 12.dp)) {
-                        SearchButton(onClick = onSearchClick)
-                    }
-                },
-                modifier = Modifier.shadow(elevation = 2.dp)
+                Box(modifier = Modifier.padding(end = 12.dp)) {
+                    SearchButton(onClick = onSearchClick)
+                }
+            }, modifier = Modifier.shadow(elevation = 2.dp)
             )
-        }
-    ) { paddingValues ->
+        }) { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
             AnimatedPlayfulBackground(
-                modifier = Modifier.matchParentSize(),
-                particleCount = 18
+                modifier = Modifier.matchParentSize(), particleCount = 18
             )
 
             LazyVerticalGrid(
@@ -619,8 +560,7 @@ fun SafeKidsHomeScreen(
                         rating = (movie.vote_average ?: 0.0).toFloat(),
                         imageUrl = "https://image.tmdb.org/t/p/w500${movie.poster_path}",
                         modifier = Modifier.fillMaxWidth(),
-                        onClick = { onMovieClick(movie) }
-                    )
+                        onClick = { onMovieClick(movie) })
 
                     if (index >= kidsMovies.size - 4 && !isLoading) {
                         viewModel.loadMoreKidsMovies()
@@ -648,17 +588,14 @@ fun SafeKidsHomeScreen(
 
 
 private data class MovieData(
-    val title: String,
-    val genre: String,
-    val rating: Float,
-    val posterGradient: List<Color>
+    val title: String, val genre: String, val rating: Float, val posterGradient: List<Color>
 )
 
 
 @Preview(showBackground = true)
 @Composable
 private fun PreviewSafeKidsHomeScreen() {
-    SafeKidsHomeScreen(onMovieClick = {} , onSearchClick = {}, onFavoritesClick={})
+    SafeKidsHomeScreen(onMovieClick = {}, onSearchClick = {}, onFavoritesClick = {})
 }
 
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
@@ -684,6 +621,7 @@ private fun PreviewSearchButton() {
         SearchButton()
     }
 }
+
 @Composable
 fun MovieCardDynamic(
     title: String,
@@ -695,12 +633,9 @@ fun MovieCardDynamic(
     var isPressed by remember { mutableStateOf(false) }
 
     val scale by animateFloatAsState(
-        targetValue = if (isPressed) 0.95f else 1f,
-        animationSpec = spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy,
-            stiffness = Spring.StiffnessMedium
-        ),
-        label = "poster_scale"
+        targetValue = if (isPressed) 0.95f else 1f, animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessMedium
+        ), label = "poster_scale"
     )
 
     Card(
@@ -713,12 +648,10 @@ fun MovieCardDynamic(
                 onClick = {
                     isPressed = true
                     onClick()
-                }
-            ),
+                }),
         shape = RoundedCornerShape(24.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
-    ) {
+        colors = CardDefaults.cardColors(containerColor = Color.White)) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
 
             AsyncImage(
@@ -743,7 +676,7 @@ fun MovieCardDynamic(
                     fontWeight = FontWeight.Bold,
                     color = SafeKidsColors.TextPrimary,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis 
+                    overflow = TextOverflow.Ellipsis
                 )
 
 

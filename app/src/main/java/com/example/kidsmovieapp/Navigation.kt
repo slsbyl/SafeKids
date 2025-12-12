@@ -1,22 +1,36 @@
-package com.example.kidsmovieapp.navigation
+package com.example.kidsmovieapp
 
+import android.app.Application
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.kidsmovieapp.data.remote.dto.MovieDto
+import com.example.kidsmovieapp.data.repository.MovieRepository
 import com.example.kidsmovieapp.screens.DetailScreen
 import com.example.kidsmovieapp.screens.FavoritesScreen
+import com.example.kidsmovieapp.screens.MovieViewModelFactory
 import com.example.kidsmovieapp.screens.SafeKidsHomeScreen
 import com.example.kidsmovieapp.screens.SearchScreen
 import com.example.kidsmovieapp.screens.SplashScreen
-import com.example.kidsmovieapp.ui.viewmodel.MovieViewModel
+import com.example.kidsmovieapp.screens.MovieViewModel
+
+
 
 @Composable
 fun NavigationGraph(navController: NavHostController) {
-    val viewModel: MovieViewModel = viewModel()
-
+    val context = LocalContext.current
+    val application = remember { context.applicationContext as Application }
+    val movieRepository = remember { MovieRepository() }
+    val factory = remember {
+        MovieViewModelFactory(
+            application = application,
+            repository = movieRepository
+        )
+    }
+    val viewModel: MovieViewModel = viewModel(factory = factory)
     NavHost(
         navController = navController,
         startDestination = "splash"
@@ -67,23 +81,18 @@ fun NavigationGraph(navController: NavHostController) {
                 )
             }
         }
-        //composable("favorites") {
-         //   val viewModel: MovieViewModel = viewModel()
-//val favorites by viewModel.favorites.collectAsState()
 
-           // FavoritesScreen(
-             //   favorites = favorites,
-             //   onMovieClick = { movie ->
-                   // navController.navigate("detail/${movie.id}")
-             //   },
-              //  onBackClicked = { navController.popBackStack() } )
-        //}
-
+        composable("favorites") {
+            FavoritesScreen(
+                viewModel = viewModel,
+                onMovieClick = { movie ->
+                    navController.navigate("detail/${movie.id}")
+                },
+                onBackClicked = { navController.popBackStack() }
+            )
+        }
     }
 }
-
-
-
 
 
 

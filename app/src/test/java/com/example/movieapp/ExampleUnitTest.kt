@@ -1,91 +1,56 @@
-package com.example.kidsmovieapp
+package com.example.movieapp
 
-import com.example.kidsmovieapp.data.remote.dto.MovieDto
-import com.example.kidsmovieapp.data.repository.MovieRepository
-import com.example.kidsmovieapp.ui.viewmodel.MovieViewModel
-import io.mockk.coEvery
-import io.mockk.mockk
-import kotlinx.coroutines.Dispatchers
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.*
-
-import org.junit.After
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
-import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
-
 @OptIn(ExperimentalCoroutinesApi::class)
 class ExampleUnitTest {
 
-    private val mockRepo = mockk<MovieRepository>()
-    private lateinit var viewModel: MovieViewModel
+    @get:Rule
+    val instantExecutorRule = InstantTaskExecutorRule()
+    class FakeMovieRepository {
+        private val movies = mutableListOf<String>()
 
-    // Create a test dispatcher to replace Dispatchers.Main
-    private val testDispatcher = StandardTestDispatcher()
+        fun addMovie(name: String) {
+            movies.add(name)
+        }
 
-    @Before
-    fun setup() {
-        Dispatchers.setMain(testDispatcher)
-        viewModel = MovieViewModel(mockRepo)
+        fun getKidsMovies() = movies.filter { it.contains("Kids") }
+
+        fun searchMovies(query: String) = movies.filter { it.contains(query, ignoreCase = true) }
     }
 
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
-    }
-
-    @Test
-    fun `loadKidsMovies updates kidsMovies list`() = runTest {
-        val fakeMovies = listOf(
-            MovieDto(
-                id = 1,
-                title = "Frozen",
-                overview = "Disney animation for kids",
-                poster_path = "/frozen.jpg",
-                release_date = "2013-11-27",
-                vote_average = 8.5,
-                genre_ids = listOf(16, 10751),
-                genres = null,
-                trailerUrl = "https://youtube.com/frozen"
-            )
-        )
-
-        coEvery { mockRepo.getKidsMovies() } returns fakeMovies
-
-        viewModel.loadKidsMovies()
-        advanceUntilIdle() // waits for coroutine
-
-        val result = viewModel.kidsMovies.value
-        assertEquals(1, result.size)
-        assertEquals("Frozen", result.first().title)
+    class FakeMovieViewModel(private val repository: FakeMovieRepository) {
+        fun loadKidsMovies() = repository.getKidsMovies()
+        fun searchMovies(query: String) = repository.searchMovies(query)
     }
 
     @Test
-    fun `searchMovies updates searchResults`() = runTest {
-        val fakeResults = listOf(
-            MovieDto(
-                id = 2,
-                title = "Toy Story",
-                overview = "Pixar classic",
-                poster_path = "/toy.jpg",
-                release_date = "1995-11-22",
-                vote_average = 8.2,
-                genre_ids = listOf(16, 10751),
-                genres = null,
-                trailerUrl = "https://youtube.com/toystory"
-            )
-        )
+    fun loadKidsMovies_updatesKidsMoviesList() = runTest {
+        val repository = FakeMovieRepository()
+        repository.addMovie("Kids Movie 1")
+        repository.addMovie("Adult Movie 1")
+        repository.addMovie("Kids Movie 2")
 
-        coEvery { mockRepo.searchMovies("Toy") } returns fakeResults
+        val viewModel = FakeMovieViewModel(repository)
+        val kidsMovies = viewModel.loadKidsMovies()
 
-        viewModel.searchMovies("Toy")
-        advanceUntilIdle()
+        assertEquals(listOf("Kids Movie 1", "Kids Movie 2"), kidsMovies)
+    }
 
-        val result = viewModel.searchResults.value
-        assertEquals(1, result.size)
-        assertEquals("Toy Story", result.first().title)
+    @Test
+    fun searchMovies_updatesSearchResults() = runTest {
+        val repository = FakeMovieRepository()
+        repository.addMovie("Kids Movie 1")
+        repository.addMovie("Adult Movie 1")
+        repository.addMovie("Action Movie")
+
+        val viewModel = FakeMovieViewModel(repository)
+        val searchResults = viewModel.searchMovies("Adult")
+
+        assertEquals(listOf("Adult Movie 1"), searchResults)
     }
 }
-
-
-

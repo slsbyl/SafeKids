@@ -61,7 +61,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -75,12 +74,8 @@ import com.example.kidsmovieapp.ui.theme.PinkAccent
 import com.example.kidsmovieapp.ui.theme.PinkGradient
 import com.example.kidsmovieapp.ui.theme.PurpleAccent
 import com.example.kidsmovieapp.ui.theme.TealAccent
-import com.example.kidsmovieapp.ui.theme.backgroundColor
 import com.example.kidsmovieapp.ui.theme.buttonGradient
-import com.example.kidsmovieapp.ui.viewmodel.MovieViewModel
 import com.example.kidsmovieapp.AnimatedBackground
-import androidx.compose.runtime.*
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 
 
@@ -107,8 +102,6 @@ val genreMap = mapOf(
 )
 
 
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailScreen(
@@ -116,8 +109,13 @@ fun DetailScreen(
     viewModel: MovieViewModel = viewModel(),
     onBackClicked: () -> Unit
 ) {
+
+    val isFavorite by viewModel.isFavorite.collectAsState()
+
     LaunchedEffect(key1 = movieId) {
         viewModel.getMovieDetails(movieId)
+
+        viewModel.checkIsFavorite(movieId)
     }
 
     val movie by viewModel.selectedMovie.collectAsState()
@@ -135,6 +133,8 @@ fun DetailScreen(
                 } else {
                     MovieDetailScreen(
                         movie = movie!!,
+                        isFavorite = isFavorite,
+                        onToggleFavorite = { viewModel.toggleFavorite(movie!!) },
                         onBackClicked = onBackClicked
                     )
                 }
@@ -145,9 +145,15 @@ fun DetailScreen(
 
 
 @Composable
-fun MovieDetailScreen(movie: MovieDto, onBackClicked: () -> Unit) {
+fun MovieDetailScreen(
+    movie: MovieDto,
+    isFavorite: Boolean,
+    onToggleFavorite: () -> Unit,
+    onBackClicked: () -> Unit
+) {
     val context = LocalContext.current
-    var isLiked by remember { mutableStateOf(false) }
+
+    val scrollState = rememberScrollState()
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -204,7 +210,7 @@ fun MovieDetailScreen(movie: MovieDto, onBackClicked: () -> Unit) {
             // Scrollable below app bar
             Column(
                 modifier = Modifier
-                    .verticalScroll(rememberScrollState())
+                    .verticalScroll(scrollState)
                     .fillMaxSize()
                     .padding(horizontal = 20.dp)
             ) {
@@ -229,7 +235,7 @@ fun MovieDetailScreen(movie: MovieDto, onBackClicked: () -> Unit) {
 
                     Column {
                         Text(
-                            text = movie.title,
+                            text = movie.title ?: "Untitled",
                             color = DarkPurpleText,
                             fontSize = 28.sp,
                             fontWeight = FontWeight.Bold,
@@ -332,7 +338,7 @@ fun MovieDetailScreen(movie: MovieDto, onBackClicked: () -> Unit) {
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                movie?.trailerUrl?.let { trailerUrl ->
+                movie.trailerUrl?.let { trailerUrl ->
                     Button(
                         onClick = {
                             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(trailerUrl))
@@ -389,7 +395,7 @@ fun MovieDetailScreen(movie: MovieDto, onBackClicked: () -> Unit) {
                 )
 
                 Button(
-                    onClick = { isLiked = !isLiked },
+                    onClick = onToggleFavorite,
                     shape = RoundedCornerShape(50),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -399,7 +405,8 @@ fun MovieDetailScreen(movie: MovieDto, onBackClicked: () -> Unit) {
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
-                            imageVector = if (isLiked) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+
+                            imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                             contentDescription = null,
                             tint = PinkAccent,
                             modifier = Modifier
@@ -410,7 +417,8 @@ fun MovieDetailScreen(movie: MovieDto, onBackClicked: () -> Unit) {
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = if (isLiked) "You liked it! ❤️" else "Like the movie 💖",
+
+                            text = if (isFavorite) "Added To Favorites💖" else "Add To Favorites❤️",
                             color = PinkAccent,
                             fontWeight = FontWeight.Bold,
                             fontSize = 20.sp
@@ -423,6 +431,7 @@ fun MovieDetailScreen(movie: MovieDto, onBackClicked: () -> Unit) {
         }
     }
 }
+
 
 @Composable
 fun InfoTag(text: String, backgroundColor: Color, isCircle: Boolean = false) {

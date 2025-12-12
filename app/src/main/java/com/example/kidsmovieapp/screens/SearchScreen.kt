@@ -1,6 +1,5 @@
 package com.example.kidsmovieapp.screens
 
-import android.R.attr.title
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -20,7 +19,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.*
-import androidx.compose.ui.input.pointer.motionEventSpy
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
@@ -31,10 +29,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.kidsmovieapp.R
-import com.example.kidsmovieapp.ui.viewmodel.MovieViewModel
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.kidsmovieapp.data.remote.dto.MovieDto
-import kotlin.concurrent.timerTask
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
