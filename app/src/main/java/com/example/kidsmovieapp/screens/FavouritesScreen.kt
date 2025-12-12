@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -18,6 +17,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -37,8 +38,7 @@ import coil.compose.AsyncImage
 import com.example.kidsmovieapp.AnimatedBackground
 import com.example.kidsmovieapp.data.remote.dto.MovieDto
 import com.example.kidsmovieapp.ui.theme.PinkAccent
-import com.example.kidsmovieapp.ui.theme.BlueGradient
-import com.example.kidsmovieapp.ui.theme.PinkGradient
+
 import com.example.kidsmovieapp.ui.theme.DarkPurpleText
 
 
@@ -52,8 +52,74 @@ fun FavoritesScreen(
     val favorites by viewModel.favoriteMovies.collectAsState()
 
     Scaffold(
-
-        topBar = { }) { paddingValues ->
+        topBar = {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(Color.White, Color(0xFFF8EAFE))
+                        )
+                    )
+            ) {
+                TopAppBar(
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color.Transparent
+                    ),
+                    title = {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            IconButton(onClick = onBackClicked) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(40.dp)
+                                        .background(
+                                            brush = Brush.linearGradient(
+                                                colors = listOf(
+                                                    Color(0xFF00B7D9),
+                                                    Color(0xFFE91E63)
+                                                )
+                                            ),
+                                            shape = RoundedCornerShape(45.dp)
+                                        ),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                        contentDescription = "Back",
+                                        tint = Color.White
+                                    )
+                                }
+                            }
+                            Row(
+                                modifier = Modifier
+                                    .weight(1f),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Favorite,
+                                    contentDescription = null,
+                                    tint = PinkAccent
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = "Your Favorites",
+                                    color = Color(0xFF2D1B69),
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 24.sp,
+                                    textAlign = TextAlign.Center
+                                )
+                            }
+                            Spacer(modifier = Modifier.size(40.dp))
+                        }
+                    },
+                )
+            }
+        }
+    ) { paddingValues ->
 
         Box(
             modifier = Modifier.fillMaxSize()
@@ -65,55 +131,6 @@ fun FavoritesScreen(
                     .fillMaxSize()
                     .padding(paddingValues)
             ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color.White)
-                        .padding(top = 26.dp, start = 20.dp, end = 20.dp, bottom = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    IconButton(
-                        onClick = onBackClicked, modifier = Modifier.size(40.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back",
-                            tint = Color.White,
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(
-                                    brush = Brush.horizontalGradient(
-                                        listOf(
-                                            BlueGradient, PinkGradient
-                                        )
-                                    ), shape = CircleShape
-                                )
-                                .padding(8.dp)
-                        )
-                    }
-
-                    Row(
-                        modifier = Modifier.weight(1f),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Favorite,
-                            contentDescription = null,
-                            tint = PinkAccent
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = "Your Favorites",
-                            color = DarkPurpleText,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 24.sp,
-                            textAlign = TextAlign.Center
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.size(40.dp))
-                }
                 if (favorites.isEmpty()) {
                     Box(
                         modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
@@ -174,8 +191,6 @@ fun FavoriteMovieItem(
                         )
                     )
             )
-
-
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
