@@ -535,9 +535,6 @@ fun SafeKidsHomeScreen(
                     Box(modifier = Modifier.padding(end = 12.dp)) {
                         SearchButton(onClick = onSearchClick)
                     }
-                    Box(modifier = Modifier.padding(end = 12.dp)) {
-                    SearchButton(onClick = onSearchClick)
-                }
             }, modifier = Modifier.shadow(elevation = 2.dp)
             )
         }) { paddingValues ->
