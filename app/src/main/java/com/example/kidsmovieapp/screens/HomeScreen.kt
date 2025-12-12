@@ -444,6 +444,70 @@ private fun SearchButton(
         }
     }
 }
+@Composable
+fun FavoriteButton(
+    onClick: () -> Unit = {},
+    modifier: Modifier = Modifier
+) {
+    var isPressed by remember { mutableStateOf(false) }
+
+    val scale by animateFloatAsState(
+        targetValue = if (isPressed) 0.9f else 1f,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        ),
+        label = "favorite_button_scale"
+    )
+
+    Box(
+        modifier = modifier
+            .size(48.dp)
+            .scale(scale)
+            .clip(CircleShape)
+            .background(
+                brush = Brush.radialGradient(
+                    colors = listOf(
+                        SafeKidsColors.CandyTurquoise,
+                        SafeKidsColors.CandyPink,
+                        SafeKidsColors.CandyPurple
+                    )
+                )
+            )
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = {
+                    isPressed = true
+                    onClick()
+                }
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        Box(
+            modifier = Modifier
+                .size(36.dp)
+                .clip(CircleShape)
+                .background(Color.White),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = Icons.Default.Favorite,
+                contentDescription = "Favorites",
+                tint = SafeKidsColors.CandyPink,
+                modifier = Modifier.size(20.dp)
+            )
+        }
+    }
+
+    LaunchedEffect(isPressed) {
+        if (isPressed) {
+            delay(150)
+            isPressed = false
+        }
+    }
+}
+
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -466,15 +530,12 @@ fun SafeKidsHomeScreen(
                 colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = SafeKidsColors.HeaderBackground
             ), title = { SafeKidsLogo(size = 48.dp) }, actions = {
-                IconButton(onClick = { onFavoritesClick() }) {
-                    Icon(
-                        imageVector = Icons.Default.Favorite,
-                        contentDescription = "Favorites",
-                        tint = SafeKidsColors.CandyPink
-                    )
-                }
+                    FavoriteButton(onClick = onFavoritesClick)
 
-                Box(modifier = Modifier.padding(end = 12.dp)) {
+                    Box(modifier = Modifier.padding(end = 12.dp)) {
+                        SearchButton(onClick = onSearchClick)
+                    }
+                    Box(modifier = Modifier.padding(end = 12.dp)) {
                     SearchButton(onClick = onSearchClick)
                 }
             }, modifier = Modifier.shadow(elevation = 2.dp)
