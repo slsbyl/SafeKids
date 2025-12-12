@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,6 +35,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import com.example.kidsmovieapp.data.remote.dto.MovieDto
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
@@ -42,7 +44,8 @@ fun SearchScreen(
     onMovieClick: (MovieDto) -> Unit = {}
 ) {
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-        var query by remember { mutableStateOf(TextFieldValue("")) }
+
+        var query by rememberSaveable { mutableStateOf("") }
 
         // loading movies
         LaunchedEffect(Unit) {
@@ -50,7 +53,7 @@ fun SearchScreen(
         }
         val kidsMovies by viewModel.kidsMovies.collectAsState()
         val filteredResults = kidsMovies.filter { movie ->
-            query.text.isEmpty() || movie.title?.contains(query.text, ignoreCase = true) == true
+            query.isEmpty() || movie.title?.contains(query, ignoreCase = true) == true
         }
 
         // Animation
@@ -159,7 +162,7 @@ fun SearchScreen(
                 var isFocused by remember { mutableStateOf(false) }
                 OutlinedTextField(
                     value = query,
-                    onValueChange = { query = it },
+                    onValueChange = { query = it},
                     modifier = Modifier
                         .fillMaxWidth()
                         .shadow(12.dp, shape = RoundedCornerShape(50.dp))
@@ -207,7 +210,7 @@ fun SearchScreen(
                 Spacer(modifier = Modifier.height(24.dp))
 
                 //Result
-                if (query.text.isEmpty()) {
+                if (query.isEmpty()) {
                     CenteredDefaultContent()
 
                 } else if (filteredResults.isEmpty()) {
